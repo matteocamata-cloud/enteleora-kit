@@ -15,14 +15,14 @@ jobs:
         with:
           node-version: 22
       - run: npm i --no-save playwright@1.65.0
-      - run: npx playwright install --with-deps chromium webkit firefox
-      - name: Branch build (this commit, served locally) in chromium, webkit, firefox
-        run: node tests/live-check.js --serve . --engines chromium,webkit,firefox --out out/branch 2>&1 | tee branch.txt; exit ${PIPESTATUS[0]}
+      - run: npx playwright install --with-deps chromium webkit firefox msedge
+      - name: Branch build (this commit, served locally) in chromium, webkit, firefox, msedge
+        run: node tests/live-check.js --serve . --engines chromium,webkit,firefox,msedge --out out/branch 2>&1 | tee branch.txt; exit ${PIPESTATUS[0]}
         shell: bash
-      - name: Live URL (what artists see now) in chromium, webkit, firefox
+      - name: Live URL (what artists see now) in chromium, webkit, firefox, msedge
         if: always()
         continue-on-error: true
-        run: node tests/live-check.js --url https://matteocamata-cloud.github.io/enteleora-kit/ --engines chromium,webkit,firefox --out out/live 2>&1 | tee live.txt; exit ${PIPESTATUS[0]}
+        run: node tests/live-check.js --url https://matteocamata-cloud.github.io/enteleora-kit/ --engines chromium,webkit,firefox,msedge --out out/live 2>&1 | tee live.txt; exit ${PIPESTATUS[0]}
         shell: bash
       - name: Publish raw output as annotations (readable without login)
         if: always()

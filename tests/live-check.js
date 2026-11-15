@@ -58,9 +58,9 @@ const TABS = ['Works', 'Wall labels', 'Price list', 'Certificates', 'Edition reg
 async function runEngine(name, URL) {
   let pass = 0, fail = 0;
   const ok = (c, m) => { if (c) pass++; else fail++; console.log(`${c ? 'PASS' : 'FAIL'} [${name}] ${m}`); };
-  const type = pw[name];
+  const type = name === 'msedge' ? pw.chromium : pw[name];
   let browser;
-  try { browser = await type.launch(); } catch (e) { ok(false, 'launch: ' + e.message.split('\n')[0]); return { pass, fail }; }
+  try { browser = await type.launch(name === 'msedge' ? { channel: 'msedge' } : {}); } catch (e) { ok(false, 'launch: ' + e.message.split('\n')[0]); return { pass, fail }; }
   console.log(`--- ${name} ${browser.version()} ---`);
   const errors = [];
   const watch = p => { p.on('pageerror', e => errors.push('pageerror: ' + e.message)); p.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text()); }); };
@@ -151,9 +151,9 @@ async function runEngine(name, URL) {
   const tooTall = certInfo.filter(c => c.h > LETTER_H).length, clipped = certInfo.filter(c => c.clipped).length, nobreak = certInfo.filter(c => !c.brk).length;
   ok(n >= 19 && tooTall === 0 && nobreak === 0, `print layout at Letter size: ${n} certificates, each fits one page (max ${Math.round(Math.max(...certInfo.map(c => c.h)))}px of ${LETTER_H}px), page break after each`);
   ok(clipped === 0, `print layout: no certificate content cut off (clipped=${clipped})`);
-  if (name === 'chromium') {
+  if (name === 'chromium' || name === 'msedge') {
     const pdf = await pp.pdf({ format: 'Letter', printBackground: true });
-    fs.writeFileSync(path.join(OUT, 'chromium-certs-letter.pdf'), pdf);
+    fs.writeFileSync(path.join(OUT, name + '-certs-letter.pdf'), pdf);
     const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
     ok(pages === n, `Letter PDF: ${pages} pages for ${n} certificates`);
   } else {
