@@ -1,6 +1,6 @@
 // Prints live-check output as GitHub annotations, grouped by engine, so it can be read without logging in.
 const fs = require('fs');
-for (const f of ['branch', 'live']) {
+for (const f of process.argv.slice(2)) {
   if (!fs.existsSync(f + '.txt')) continue;
   const g = {};
   for (const l of fs.readFileSync(f + '.txt', 'utf8').split('\n')) {

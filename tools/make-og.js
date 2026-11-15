@@ -26,7 +26,7 @@ const KIT = require('url').pathToFileURL(path.join(ROOT, 'index.html')).href;
   .bar{position:absolute;left:0;right:0;bottom:0;height:12px;background:#26443a}
   </style><div class="t"><p class="b">ENTELEORA</p><h1>Exhibition &amp; Edition Kit</h1>
   <p class="s">Wall labels, price lists, certificates of authenticity and an edition register for artists.</p></div>
-  <div class="f">Free · in your browser · no account</div>
+  <div class="f">Runs in your browser · no account</div>
   <img src="data:image/png;base64,${cert}"><div class="bar"></div>`);
   await p.screenshot({ path: path.join(ROOT, 'og-image.png') });
 

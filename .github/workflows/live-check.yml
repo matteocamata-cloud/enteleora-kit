@@ -24,9 +24,12 @@ jobs:
         continue-on-error: true
         run: node tests/live-check.js --url https://matteocamata-cloud.github.io/enteleora-kit/ --engines chromium,webkit,firefox,msedge --out out/live 2>&1 | tee live.txt; exit ${PIPESTATUS[0]}
         shell: bash
-      - name: Publish raw output as annotations (readable without login)
+      - name: Publish branch output as annotations (readable without login)
         if: always()
-        run: node tests/annotate.js
+        run: node tests/annotate.js branch
+      - name: Publish live output as annotations (readable without login)
+        if: always()
+        run: node tests/annotate.js live
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -62,8 +62,8 @@ async function runEngine(name, URL) {
   let browser;
   try { browser = await type.launch(name === 'msedge' ? { channel: 'msedge' } : {}); } catch (e) { ok(false, 'launch: ' + e.message.split('\n')[0]); return { pass, fail }; }
   console.log(`--- ${name} ${browser.version()} ---`);
-  const errors = [];
-  const watch = p => { p.on('pageerror', e => errors.push('pageerror: ' + e.message)); p.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text()); }); };
+  const errors = [], outside = [];
+  const watch = p => { p.on('request', r => { const u = r.url(); if (!/^(data|blob):/.test(u) && new globalThis.URL(u).origin !== new globalThis.URL(URL).origin) outside.push(u); }); p.on('pageerror', e => errors.push('pageerror: ' + e.message)); p.on('console', m => { if (m.type() === 'error') errors.push('console: ' + m.text()); }); };
 
   // 1. first visit, fresh browser, desktop and phone
   for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
@@ -161,6 +161,7 @@ async function runEngine(name, URL) {
   }
   await pc.close();
 
+  ok(outside.length === 0, '0 requests to any other server' + (outside.length ? ': ' + JSON.stringify(outside.slice(0, 5)) : ''));
   ok(errors.length === 0, '0 page/console errors' + (errors.length ? ': ' + JSON.stringify(errors.slice(0, 5)) : ''));
   await browser.close();
   console.log(`[${name}] ${pass} passed, ${fail} failed`);
