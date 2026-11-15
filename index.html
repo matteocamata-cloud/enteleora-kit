@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
 <meta name="description" content="Wall labels, price lists, certificates of authenticity and an edition register for artists. Free, in your browser, no account.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://matteocamata-cloud.github.io/enteleora-kit/">
+<meta property="og:title" content="Exhibition &amp; Edition Kit for artists">
+<meta property="og:description" content="Wall labels, price lists, certificates of authenticity and an edition register for artists. Free, in your browser, no account.">
+<meta property="og:image" content="https://matteocamata-cloud.github.io/enteleora-kit/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Exhibition &amp; Edition Kit: a sample certificate of authenticity">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 <title>Exhibition &amp; Edition Kit</title>
 <style>
 :root{--bg:#f6f4ef;--card:#fff;--ink:#1d1b18;--mute:#6b665e;--line:#ddd8cd;--acc:#2f4a3f;--acc2:#e8efe9;--warn:#8a4b00;--warnbg:#fff3df;--bad:#9b1c1c}
@@ -92,6 +103,7 @@ body{font:16px/1.55 "Inter","Helvetica Neue",system-ui,-apple-system,"Segoe UI",
 .brand{margin:0 0 6px;font-size:11px;letter-spacing:.32em;color:var(--gold);font-weight:600}
 h1{font:500 34px/1.1 Georgia,"Times New Roman",serif;letter-spacing:-.01em;margin:0 0 8px}
 .tag{font-size:15px;max-width:620px;color:#5d584f}
+.who{margin:0 0 6px;font-size:17px;font-weight:600;color:var(--acc)}
 .lang{display:none}
 header.top{padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:6px}
 nav.tabs{gap:4px;margin:16px 0 20px;border-bottom:1px solid var(--line);padding-bottom:0}
@@ -144,6 +156,7 @@ var INS=['gallery','artist','shared'];
 /* ---------- text: key -> [English, Spanish, Brazilian Portuguese] ---------- */
 var S={
 title:['Exhibition & Edition Kit','Kit de Exposición y Ediciones','Kit de Exposição e Edições'],
+who:['For artists who sell prints and original works.','Para artistas que venden grabados y obras originales.','Para artistas que vendem gravuras e obras originais.'],
 tag:['Wall labels, price list, certificates of authenticity, edition register, condition reports and consignment notes from one list of works. Runs in your browser, no account. Your data stays on this computer.','Cartelas de sala, lista de precios, certificados de autenticidad, registro de ediciones, informes de estado y notas de consignación a partir de una sola lista de obras. Funciona en tu navegador, sin cuenta. Tus datos se quedan en este ordenador.','Legendas de parede, lista de preços, certificados de autenticidade, registro de edições, relatórios de estado e notas de consignação a partir de uma única lista de obras. Funciona no seu navegador, sem conta. Seus dados ficam neste computador.'],
 tWorks:['Works','Obras','Obras'],tLabels:['Wall labels','Cartelas de sala','Legendas'],tPrices:['Price list','Lista de precios','Lista de preços'],tCerts:['Certificates','Certificados','Certificados'],tReg:['Edition register','Registro de ediciones','Registro de edições'],tCond:['Condition report','Informe de estado','Relatório de conservação'],tCons:['Consignment','Consignación','Consignação'],tBackup:['Import & backup','Importar y copia','Importar e backup'],
 print:['Print this page','Imprimir esta página','Imprimir esta página'],
@@ -350,7 +363,7 @@ function render(){
   root.textContent='';
   var tabs=[['works','tWorks'],['labels','tLabels'],['prices','tPrices'],['certs','tCerts'],['reg','tReg'],['cond','tCond'],['cons','tCons'],['backup','tBackup']];
   root.appendChild(h('header',{class:'top'},
-    h('div',null,h('p',{class:'brand',text:'ENTELEORA'}),h('h1',{text:t('title')}),h('p',{class:'tag',text:t('tag')})),
+    h('div',null,h('p',{class:'brand',text:'ENTELEORA'}),h('h1',{text:t('title')}),h('p',{class:'who',text:t('who')}),h('p',{class:'tag',text:t('tag')})),
     h('div',{class:'lang',role:'group','aria-label':'Language'},LANGS.map(function(l){
       return h('button',{type:'button','aria-pressed':String(state.lang===l),text:l.toUpperCase(),onclick:function(){state.lang=l;save();render()}})}))
   ));
@@ -401,8 +414,9 @@ function vWorks(){
       field(t('currency'),selectOf(CURR.map(function(c){return[c,c]}),state.currency,function(v){state.currency=v;save()}))
     ),
     sampleRow());
+  if(!state.works.length)box.appendChild(emptyMsg());
   box.appendChild(d);
-  if(!state.works.length){box.appendChild(emptyMsg());box.appendChild(importBox())}
+  if(!state.works.length)box.appendChild(importBox());
   state.works.forEach(function(w,i){
     var xc=extraCount(w);
     var warn=xc?h('div',{class:'warn',text:t('extraKept',{n:xc})}):null;
@@ -472,7 +486,7 @@ function vPrices(){
       plist.avail?h('td',{text:availTxt}):null,
       h('td',{text:fmtMoney(w.price)})));
   });
-  var sheet=h('div',{class:'sheet'},sheetHead(t('priceListH')+(state.exhibition?' — '+state.exhibition:''),[state.artist,state.venue,fmtDate(state.issueDate||todayISO())]),
+  var sheet=h('div',{class:'sheet'},sheetHead(t('priceListH')+(state.exhibition?': '+state.exhibition:''),[state.artist,state.venue,fmtDate(state.issueDate||todayISO())]),
     h('table',null,h('thead',null,h('tr',null,h('th',{text:t('colWork')}),h('th',{text:t('colDetails')}),plist.avail?h('th',{text:t('colAvail')}):null,h('th',{text:t('colPrice')}))),tb),
     h('p',{class:'sub',style:'margin-top:8px',text:t('pricesIn',{c:state.currency})+(state.contact?' '+state.contact:'')}));
   box.appendChild(sheet);return box;
@@ -487,7 +501,7 @@ function certList(){
 function vCerts(){
   var box=h('div');
   var opts=[['sold',t('certSold')],['all',t('certAll')]];
-  state.works.forEach(function(w){w.copies.forEach(function(c){opts.push([c.id,workTitle(w)+' — '+copyLabel(c)])})});
+  state.works.forEach(function(w){w.copies.forEach(function(c){opts.push([c.id,workTitle(w)+' · '+copyLabel(c)])})});
   if(!opts.some(function(o){return o[0]===certSel}))certSel='sold';
   box.appendChild(h('section',{class:'panel noprint'},h('div',{class:'row'},
     field(t('certWhich'),selectOf(opts,certSel,function(v){certSel=v;render()})),
@@ -599,7 +613,7 @@ function vCons(){
         h('dt',{text:t('kAgreed')}),h('dd',{text:fmtMoney(w.price)}),
         h('dt',{text:t('kComm')}),h('dd',{text:comm===null?'':comm+' %'}),
         h('dt',{text:t('kNet')}),h('dd',{text:net===null?'':fmtMoney(Math.round(net*100)/100)}),
-        h('dt',{text:t('kStart')+' / '+t('kEnd')}),h('dd',{text:[fmtDate(k.start),fmtDate(k.end)].filter(Boolean).join(' — ')}),
+        h('dt',{text:t('kStart')+' / '+t('kEnd')}),h('dd',{text:[fmtDate(k.start),fmtDate(k.end)].filter(Boolean).join(' - ')}),
         h('dt',{text:t('kIns')}),h('dd',{text:t('ins'+cap(k.ins))})),
       h('p',{class:'sub',text:t('kNotes')}),h('div',{class:'block',text:k.notes}),
       h('div',{class:'sig'},h('div',{text:t('sigConsignor')}),h('div',{text:t('sigConsignee')})),

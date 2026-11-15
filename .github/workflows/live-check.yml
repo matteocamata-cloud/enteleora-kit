@@ -1,0 +1,29 @@
+name: live-check
+on:
+  push:
+    branches: [upgrade-first-visit]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm i --no-save playwright@1.65.0
+      - run: npx playwright install --with-deps chromium webkit firefox
+      - name: Branch build (this commit, served locally) in chromium, webkit, firefox
+        run: node tests/live-check.js --serve . --engines chromium,webkit,firefox --out out/branch
+      - name: Live URL (what artists see now) in chromium, webkit, firefox
+        if: always()
+        continue-on-error: true
+        run: node tests/live-check.js --url https://matteocamata-cloud.github.io/enteleora-kit/ --engines chromium,webkit,firefox --out out/live
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-check-output
+          path: out/
