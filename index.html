@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="description" content="Wall labels, price lists, certificates of authenticity and an edition register for artists. Free, in your browser, no account.">
+<title>Exhibition &amp; Edition Kit</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d1b18;--mute:#6b665e;--line:#ddd8cd;--acc:#2f4a3f;--acc2:#e8efe9;--warn:#8a4b00;--warnbg:#fff3df;--bad:#9b1c1c}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:16px}
+header.top{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+h1{font:600 26px/1.2 Georgia,"Times New Roman",serif;margin:0 0 4px}
+.tag{margin:0;color:var(--mute);max-width:640px;font-size:14px}
+.lang{display:flex;gap:4px}
+button,.btn,select,input,textarea{font:inherit;color:inherit}
+button,.btn{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer;min-height:40px}
+button:hover{border-color:var(--acc)}
+button.primary{background:var(--acc);color:#fff;border-color:var(--acc)}
+button.danger{color:var(--bad);border-color:#e3b9b9}
+button.danger.armed{background:var(--bad);color:#fff;border-color:var(--bad)}
+button[aria-pressed="true"]{background:var(--acc);color:#fff;border-color:var(--acc)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #7aa392;outline-offset:1px}
+nav.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 16px}
+nav.tabs button{border-radius:999px;padding:6px 14px;min-height:38px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.panel h2{font:600 18px/1.3 Georgia,serif;margin:0 0 10px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mute)}
+label.f input,label.f select,label.f textarea{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;color:var(--ink);font-size:16px;min-width:0;width:100%}
+textarea{min-height:76px;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row.gap{margin-top:12px}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:14px;color:var(--ink)}
+.chk input{width:18px;height:18px}
+.note{font-size:13px;color:var(--mute)}
+.warn{background:var(--warnbg);color:var(--warn);border:1px solid #efd3a4;border-radius:8px;padding:8px 10px;font-size:13px;margin:8px 0}
+.empty{color:var(--mute);padding:24px;text-align:center;border:1px dashed var(--line);border-radius:12px}
+.work{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px;background:#fcfbf8}
+.work h3{margin:0 0 8px;font-size:15px;color:var(--mute);font-weight:600}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;font-size:14px}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}
+td input,td select{border:1px solid var(--line);border-radius:6px;padding:5px 6px;width:100%;min-width:90px;background:#fff;font-size:14px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.pill{background:var(--acc2);border-radius:999px;padding:3px 10px;font-size:13px}
+.toast{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;max-width:90vw;z-index:9}
+.toast.err{background:var(--bad)}
+footer{color:var(--mute);font-size:12px;text-align:center;padding:16px 0 32px}
+/* printable sheets (also shown on screen as preview) */
+.sheet{background:#fff;color:#000;border:1px solid var(--line);border-radius:6px;padding:18mm 16mm;font-family:Georgia,"Times New Roman",serif}
+.sheet h2{font:600 22px/1.2 Georgia,serif;margin:0 0 2px}
+.sheet .sub{color:#444;font-size:13px;margin:0 0 14px}
+.sheet table th,.sheet table td{font-size:13px;border-bottom:1px solid #ccc;color:#000}
+.labels{display:grid;gap:10mm}
+.labels.c1{grid-template-columns:1fr}.labels.c2{grid-template-columns:1fr 1fr}.labels.c3{grid-template-columns:1fr 1fr 1fr}
+.label{border:1px solid #bbb;padding:7mm;break-inside:avoid;page-break-inside:avoid;min-height:38mm}
+.label .a{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#333}
+.label .t{font-size:18px;font-style:italic;margin:2px 0 4px}
+.label .d{font-size:13px;line-height:1.45}
+.label .p{margin-top:6px;font-size:14px;font-weight:700}
+.cert{break-after:page;page-break-after:always;border:2px solid #000;padding:14mm;min-height:230mm;display:flex;flex-direction:column}
+.cert:last-child{break-after:auto;page-break-after:auto}
+.cert h2{text-align:center;font-size:28px;letter-spacing:.04em;margin:6mm 0 10mm}
+.cert .body{font-size:16px;line-height:1.7}
+.cert dl{display:grid;grid-template-columns:34mm 1fr;gap:2mm 6mm;margin:8mm 0;font-size:15px}
+.cert dt{color:#444}.cert dd{margin:0;font-weight:600}
+.cert .disc{font-size:11px;color:#444;margin-top:auto}
+.sig{display:flex;gap:16mm;margin-top:16mm}
+.sig div{flex:1;border-top:1px solid #000;padding-top:2mm;font-size:12px;color:#333}
+.kv{display:grid;grid-template-columns:44mm 1fr;gap:2mm 6mm;font-size:14px;margin:6mm 0}
+.kv dt{color:#444}.kv dd{margin:0;white-space:pre-wrap}
+.sheet.plain .block{border:1px solid #bbb;padding:4mm;min-height:24mm;white-space:pre-wrap;font-size:14px}
+@media (max-width:640px){.wrap{padding:12px}h1{font-size:22px}.sheet{padding:12px}.cert{padding:12px;min-height:0}}
+@page{margin:10mm}
+@media print{
+  body{background:#fff}
+  .wrap{max-width:none;padding:0}
+  .noprint,header.top,nav.tabs,footer,.toast{display:none!important}
+  .sheet{border:0;border-radius:0;padding:0}
+  .cert{min-height:234mm;max-height:240mm;overflow:hidden}
+}
+
+/* v1.1 design pass */
+:root{--bg:#f3f1ec;--acc:#26443a;--acc2:#e6eee9;--gold:#a98a4a}
+body{font:16px/1.55 "Inter","Helvetica Neue",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;padding:28px 20px 16px}
+.brand{margin:0 0 6px;font-size:11px;letter-spacing:.32em;color:var(--gold);font-weight:600}
+h1{font:500 34px/1.1 Georgia,"Times New Roman",serif;letter-spacing:-.01em;margin:0 0 8px}
+.tag{font-size:15px;max-width:620px;color:#5d584f}
+.lang{display:none}
+header.top{padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:6px}
+nav.tabs{gap:4px;margin:16px 0 20px;border-bottom:1px solid var(--line);padding-bottom:0}
+nav.tabs button{border:0;border-radius:8px 8px 0 0;background:transparent;padding:10px 14px;min-height:42px;color:#5d584f;font-weight:500;border-bottom:3px solid transparent}
+nav.tabs button:hover{color:var(--ink)}
+nav.tabs button[aria-pressed="true"]{background:transparent;color:var(--acc);border-bottom-color:var(--acc)}
+.panel{border-radius:14px;padding:22px;box-shadow:0 1px 2px rgba(30,25,15,.04),0 8px 24px rgba(30,25,15,.04);border-color:#e6e1d6}
+.panel h2{font:500 20px/1.3 Georgia,serif}
+button{border-radius:10px;transition:border-color .15s,background .15s}
+button.primary{background:var(--acc);box-shadow:0 1px 0 rgba(0,0,0,.15)}
+button.primary:hover{background:#1c342c}
+.empty{border:1px dashed #cfc8b8;background:#faf8f3;padding:36px 24px}
+.empty-h{font:500 20px Georgia,serif;margin:0 0 6px;color:var(--ink)}
+.work{background:#fff;border-radius:12px}
+th{letter-spacing:.08em}
+footer{letter-spacing:.04em}
+/* labels: gallery wall-label look */
+.sheet{border-radius:10px}
+.label{border:0;border-left:3px solid var(--gold);background:#fff;padding:7mm 7mm 7mm 8mm;box-shadow:0 0 0 1px #e8e4da}
+.label .a{font:600 10px/1.3 "Inter",Arial,sans-serif;letter-spacing:.2em;color:#6b665e}
+.label .t{font:italic 400 21px/1.2 Georgia,serif;margin:3px 0 6px}
+.label .d{font:400 13px/1.5 Georgia,serif;color:#2b2823}
+.label .p{font:600 14px "Inter",Arial,sans-serif;margin-top:8px;color:#1d1b18}
+/* certificate: framed, centred, formal */
+.cert{border:1.5px solid #1d1b18;outline:.6px solid #1d1b18;outline-offset:-4mm;padding:18mm 16mm;align-items:stretch;text-align:center}
+.cert .a{font:600 11px "Inter",Arial,sans-serif!important;letter-spacing:.3em!important;color:#6b665e}
+.cert h2{font:500 34px/1.15 Georgia,serif;letter-spacing:.02em;margin:10mm 0 4mm}
+.cert h2:after{content:"";display:block;width:34mm;height:1px;background:var(--gold);margin:6mm auto 0}
+.cert .body{font-size:15px;line-height:1.75;max-width:130mm;margin-left:auto;margin-right:auto}
+.cert dl{text-align:left;grid-template-columns:38mm 1fr;margin:10mm auto;width:128mm;font-size:14px;border-top:1px solid #d8d2c4;padding-top:6mm}
+.cert dt{font:600 10px "Inter",Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6b665e;padding-top:1mm}
+.cert dd{font-weight:500}
+.sig div{font:600 10px "Inter",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6b665e}
+.cert .disc{font:400 10px/1.5 Georgia,serif;color:#6b665e}
+@media screen and (max-width:640px){.cert dl{width:auto;grid-template-columns:1fr;gap:1mm}.cert .body{max-width:none}.labels.c2,.labels.c3{grid-template-columns:1fr}.sig{flex-wrap:wrap;gap:8mm}.kv{grid-template-columns:1fr}.sheet{overflow-x:auto}.cert{outline-offset:-2mm;padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+(function(){
+'use strict';
+var LANGS=['en','es','pt'],NAVL=(typeof navigator!=='undefined'&&navigator.language)||'en-US',LOCALE={en:/^en-[A-Za-z]{2}$/.test(NAVL)?NAVL:'en-US',es:'es-ES',pt:'pt-BR'};
+var KEY='aek_exhibition_kit_v1',VERSION='1.2.0';
+var STATUSES=['available','reserved','sold','consigned','notforsale'];
+var CURR=['EUR','USD','GBP','BRL','MXN','CHF','CAD','AUD','ARS','COP','CLP'];
+var CONDS=['excellent','good','fair','poor'];
+var INS=['gallery','artist','shared'];
+
+/* ---------- text: key -> [English, Spanish, Brazilian Portuguese] ---------- */
+var S={
+title:['Exhibition & Edition Kit','Kit de Exposición y Ediciones','Kit de Exposição e Edições'],
+tag:['Wall labels, price list, certificates of authenticity, edition register, condition reports and consignment notes from one list of works. Runs in your browser, no account. Your data stays on this computer.','Cartelas de sala, lista de precios, certificados de autenticidad, registro de ediciones, informes de estado y notas de consignación a partir de una sola lista de obras. Funciona en tu navegador, sin cuenta. Tus datos se quedan en este ordenador.','Legendas de parede, lista de preços, certificados de autenticidade, registro de edições, relatórios de estado e notas de consignação a partir de uma única lista de obras. Funciona no seu navegador, sem conta. Seus dados ficam neste computador.'],
+tWorks:['Works','Obras','Obras'],tLabels:['Wall labels','Cartelas de sala','Legendas'],tPrices:['Price list','Lista de precios','Lista de preços'],tCerts:['Certificates','Certificados','Certificados'],tReg:['Edition register','Registro de ediciones','Registro de edições'],tCond:['Condition report','Informe de estado','Relatório de conservação'],tCons:['Consignment','Consignación','Consignação'],tBackup:['Import & backup','Importar y copia','Importar e backup'],
+print:['Print this page','Imprimir esta página','Imprimir esta página'],
+details:['Your details','Tus datos','Seus dados'],
+artist:['Artist name','Nombre del artista','Nome do artista'],contact:['Contact (email, website)','Contacto (correo, web)','Contato (e-mail, site)'],exhibition:['Exhibition title','Título de la exposición','Título da exposição'],venue:['Venue','Lugar','Local'],place:['City (for certificates)','Ciudad (para los certificados)','Cidade (para os certificados)'],currency:['Currency','Moneda','Moeda'],
+addWork:['Add a work','Añadir una obra','Adicionar uma obra'],sample:['Load sample data','Cargar datos de ejemplo','Carregar dados de exemplo'],
+workN:['Work {n}','Obra {n}','Obra {n}'],
+wTitle:['Title','Título','Título'],wYear:['Year','Año','Ano'],wMedium:['Medium','Técnica','Técnica'],wDims:['Dimensions','Dimensiones','Dimensões'],wEd:['Edition size (0 = unique work)','Tamaño de la edición (0 = pieza única)','Tamanho da edição (0 = peça única)'],wAp:["Artist's proofs",'Pruebas de artista','Provas de artista'],wPrice:['Price','Precio','Preço'],wNotes:['Notes','Notas','Notas'],
+untitled:['Untitled','Sin título','Sem título'],
+copiesN:['{n} copies tracked','{n} ejemplares registrados','{n} exemplares registrados'],copyOne:['1 copy tracked','1 ejemplar registrado','1 exemplar registrado'],
+extraKept:['{n} copies beyond the new edition size were kept because they are not "available".','Se conservaron {n} ejemplares fuera del nuevo tamaño porque no están «disponibles».','{n} exemplares além do novo tamanho foram mantidos porque não estão «disponíveis».'],
+sampleSure:['Click again: this replaces your works','Pulsa de nuevo: esto reemplaza tus obras','Clique de novo: isto substitui suas obras'],
+del:['Delete','Eliminar','Excluir'],delSure:['Click again to delete','Pulsa de nuevo para eliminar','Clique de novo para excluir'],
+noWorks:['No works yet. Add one, or load the sample data to see how it works.','Aún no hay obras. Añade una o carga los datos de ejemplo para ver cómo funciona.','Ainda não há obras. Adicione uma ou carregue os dados de exemplo para ver como funciona.'],
+unique:['Unique work','Pieza única','Peça única'],
+edOf:['Edition of {n}','Edición de {n}','Edição de {n}'],apLabel:['AP','P/A','P/A'],
+sAvailable:['Available','Disponible','Disponível'],sReserved:['Reserved','Reservada','Reservada'],sSold:['Sold','Vendida','Vendida'],sConsigned:['On consignment','En consignación','Em consignação'],sNotforsale:['Not for sale','No está a la venta','Não está à venda'],
+onRequest:['On request','Consultar','Sob consulta'],
+colsPer:['Labels per row','Cartelas por fila','Legendas por linha'],showPrice:['Show price','Mostrar precio','Mostrar preço'],showEdition:['Show edition','Mostrar edición','Mostrar edição'],showSold:['Mark sold works','Marcar obras vendidas','Marcar obras vendidas'],
+soldMark:['Sold','Vendida','Vendida'],
+onlyAvail:['Only available works','Solo obras disponibles','Somente obras disponíveis'],showAvail:['Show availability','Mostrar disponibilidad','Mostrar disponibilidade'],
+availOf:['{a} of {n} available','{a} de {n} disponibles','{a} de {n} disponíveis'],
+priceListH:['Price list','Lista de precios','Lista de preços'],pricesIn:['Prices in {c}.','Precios en {c}.','Preços em {c}.'],
+colWork:['Work','Obra','Obra'],colDetails:['Details','Detalles','Detalhes'],colAvail:['Availability','Disponibilidad','Disponibilidade'],colPrice:['Price','Precio','Preço'],
+certH:['Certificate of Authenticity','Certificado de autenticidad','Certificado de autenticidade'],
+certWhich:['Which certificates?','¿Qué certificados?','Quais certificados?'],certSold:['All copies marked sold','Todos los ejemplares vendidos','Todos os exemplares vendidos'],certAll:['All copies','Todos los ejemplares','Todos os exemplares'],
+issueDate:['Date of issue','Fecha de emisión','Data de emissão'],
+noCerts:['Nothing to print yet. Mark a copy as sold in the edition register, or choose "All copies".','Aún no hay nada que imprimir. Marca un ejemplar como vendido en el registro de ediciones o elige «Todos los ejemplares».','Ainda não há nada para imprimir. Marque um exemplar como vendido no registro de edições ou escolha «Todos os exemplares».'],
+certBody:['I, {artist}, certify that this work is an original work created by me.','Yo, {artist}, certifico que esta obra es original y ha sido creada por mí.','Eu, {artist}, certifico que esta obra é original e foi criada por mim.'],
+certDisc:["This certificate is the artist's own declaration of authenticity. It is not independent authentication and it is not a legal guarantee.",'Este certificado es la declaración de autenticidad del propio artista. No constituye una autenticación independiente ni una garantía legal.','Este certificado é a declaração de autenticidade do próprio artista. Não constitui uma autenticação independente nem uma garantia legal.'],
+lTitle:['Title','Título','Título'],lYear:['Year','Año','Ano'],lMedium:['Medium','Técnica','Técnica'],lDims:['Dimensions','Dimensiones','Dimensões'],lEdition:['Edition','Edición','Edição'],lOwner:['Collector','Coleccionista','Colecionador'],
+issuedAt:['Issued in {place}, {date}','Emitido en {place}, a {date}','Emitido em {place}, em {date}'],issuedOn:['Issued on {date}','Emitido el {date}','Emitido em {date}'],
+sigArtist:['Signature of the artist','Firma del artista','Assinatura do artista'],sigDate:['Date','Fecha','Data'],
+regH:['Edition register','Registro de ediciones','Registro de edições'],regCopy:['Copy','Ejemplar','Exemplar'],regStatus:['Status','Estado','Situação'],regBuyer:['Buyer / holder','Comprador / titular','Comprador / titular'],regDate:['Sale date','Fecha de venta','Data da venda'],regPrice:['Sale price','Precio de venta','Preço de venda'],
+sumSold:['Sold: {n}','Vendidas: {n}','Vendidas: {n}'],sumAvail:['Available: {n}','Disponibles: {n}','Disponíveis: {n}'],sumValue:['Sales total: {v}','Total de ventas: {v}','Total de vendas: {v}'],
+condH:['Condition report','Informe de estado','Relatório de conservação'],pickWork:['Choose a work','Elige una obra','Escolha uma obra'],
+cDate:['Date of inspection','Fecha de revisión','Data da vistoria'],cBy:['Inspected by','Revisado por','Vistoriado por'],cOverall:['Overall condition','Estado general','Estado geral'],cLoc:['Location of the work','Ubicación de la obra','Localização da obra'],cDetails:['Surface, frame, mount, damage, repairs','Superficie, marco, soporte, daños, reparaciones','Superfície, moldura, suporte, danos, reparos'],
+condExcellent:['Excellent','Excelente','Excelente'],condGood:['Good','Bueno','Bom'],condFair:['Fair','Aceptable','Regular'],condPoor:['Poor','Deficiente','Ruim'],
+sigInspector:['Inspector','Revisor','Vistoriador'],sigRecipient:['Received by','Recibido por','Recebido por'],
+consH:['Consignment note','Nota de consignación','Nota de consignação'],
+kConsignee:['Gallery / consignee','Galería / consignatario','Galeria / consignatário'],kConsContact:['Consignee contact','Contacto del consignatario','Contato do consignatário'],kStart:['From','Desde','De'],kEnd:['Until','Hasta','Até'],kComm:['Commission (%)','Comisión (%)','Comissão (%)'],kIns:['Insurance paid by','Seguro a cargo de','Seguro por conta de'],kNotes:['Other terms','Otras condiciones','Outras condições'],
+insGallery:['Gallery','Galería','Galeria'],insArtist:['Artist','Artista','Artista'],insShared:['Shared','Compartido','Compartilhado'],
+kAgreed:['Agreed price','Precio acordado','Preço acordado'],kNet:['Net to the artist','Importe neto para el artista','Valor líquido para o artista'],
+consDisc:['This note is a record of what both parties have agreed. It is not a legal contract.','Esta nota es un registro de lo acordado por ambas partes. No es un contrato legal.','Esta nota é um registro do que ambas as partes combinaram. Não é um contrato legal.'],
+sigConsignor:['Artist (consignor)','Artista (consignante)','Artista (consignante)'],sigConsignee:['Gallery (consignee)','Galería (consignatario)','Galeria (consignatário)'],
+imH:['Import works from a spreadsheet','Importar obras desde una hoja de cálculo','Importar obras de uma planilha'],imHelp:['Choose a CSV file (Excel, Google Sheets, Numbers or a Shopify product export). Columns we read: title, year, medium (or type), dimensions (or size), edition, proofs (AP), price (or Variant Price). Works are added after the ones you already have.','Elige un archivo CSV (Excel, Google Sheets, Numbers o exportación de productos de Shopify). Columnas: title, year, medium, dimensions, edition, proofs, price. Las obras se añaden después de las que ya tienes.','Escolha um arquivo CSV (Excel, Google Sheets, Numbers ou exportação de produtos do Shopify). Colunas: title, year, medium, dimensions, edition, proofs, price. As obras são adicionadas depois das que você já tem.'],imPick:['CSV file','Archivo CSV','Arquivo CSV'],imConfirm:['Add {n} works','Añadir {n} obras','Adicionar {n} obras'],imNone:['No works found. Check that the first row has column names such as Title and Price.','No se encontraron obras. Comprueba que la primera fila tenga nombres de columna como Title y Price.','Nenhuma obra encontrada. Verifique se a primeira linha tem nomes de colunas como Title e Price.'],imDone:['{n} works added.','{n} obras añadidas.','{n} obras adicionadas.'],
+bkH:['Backup & restore','Copia de seguridad y restauración','Backup e restauração'],bkSave:['Download backup (JSON)','Descargar copia (JSON)','Baixar backup (JSON)'],bkCsv:['Export register (CSV)','Exportar registro (CSV)','Exportar registro (CSV)'],bkRestore:['Restore from a backup file','Restaurar desde un archivo de copia','Restaurar de um arquivo de backup'],
+bkConfirm:['Replace current data with {n} works','Reemplazar los datos actuales con {n} obras','Substituir os dados atuais por {n} obras'],
+bkBad:['This file is not a valid backup.','Este archivo no es una copia válida.','Este arquivo não é um backup válido.'],bkBig:['This file is too large.','Este archivo es demasiado grande.','Este arquivo é grande demais.'],
+bkDone:['Backup restored.','Copia restaurada.','Backup restaurado.'],bkSaved:['Backup downloaded.','Copia descargada.','Backup baixado.'],
+clearAll:['Delete all data','Borrar todos los datos','Apagar todos os dados'],clearSure:['Click again to delete everything','Pulsa de nuevo para borrar todo','Clique de novo para apagar tudo'],cleared:['All data deleted.','Datos borrados.','Dados apagados.'],
+noStore:['Your browser is not saving data (private mode?). Download a backup before you close this page.','Tu navegador no está guardando datos (¿modo privado?). Descarga una copia antes de cerrar esta página.','Seu navegador não está salvando dados (modo privado?). Baixe um backup antes de fechar esta página.'],
+aboutH:['About this kit','Sobre este kit','Sobre este kit'],
+about1:['Everything is saved in this browser on this computer. Nothing you type is sent anywhere: the kit has no server and no account. Download a backup regularly, because clearing browser data also clears this kit.','Todo se guarda en este navegador y en este ordenador. Nada de lo que escribes se envía: el kit no tiene servidor ni cuenta. Descarga una copia con regularidad, porque borrar los datos del navegador también borra este kit.','Tudo é salvo neste navegador e neste computador. Nada do que você digita é enviado: o kit não tem servidor nem conta. Baixe um backup com regularidade, pois limpar os dados do navegador também apaga este kit.'],
+about2:["Certificates are the artist's own declaration. They do not replace independent authentication or legal advice. The consignment note is a record, not a legal contract.",'Los certificados son la declaración del propio artista. No sustituyen una autenticación independiente ni el asesoramiento legal. La nota de consignación es un registro, no un contrato legal.','Os certificados são a declaração do próprio artista. Não substituem uma autenticação independente nem aconselhamento jurídico. A nota de consignação é um registro, não um contrato legal.'],
+about3:['The Spanish and Portuguese wording is still being proofread. Read the certificate text before you use it.','La redacción en español y portugués aún se está revisando. Lee el texto del certificado antes de usarlo.','A redação em espanhol e português ainda está sendo revisada. Leia o texto do certificado antes de usá-lo.'],
+foot:['Exhibition & Edition Kit v{v} · by Enteleora · no account · your data stays in your browser','Kit de Exposición y Ediciones v{v} · por Enteleora · sin cuenta · tus datos se quedan en tu navegador','Kit de Exposição e Edições v{v} · por Enteleora · sem conta · seus dados ficam no seu navegador']
+};
+var LI=0;
+function t(k,v){var e=S[k];if(!e)return k;var s=e[LI]||e[0];if(v)s=s.replace(/\{(\w+)\}/g,function(m,n){return v[n]!==undefined?v[n]:m});return s}
+
+/* ---------- helpers ---------- */
+function h(tag,props){
+  var el=document.createElement(tag);
+  if(props){Object.keys(props).forEach(function(k){
+    var v=props[k];if(v===null||v===undefined||v===false)return;
+    if(k==='class')el.className=v;
+    else if(k==='text')el.textContent=v;
+    else if(k.slice(0,2)==='on')el.addEventListener(k.slice(2),v);
+    else if(k==='value'||k==='checked'||k==='selected'||k==='disabled'||k==='multiple')el[k]=v;
+    else el.setAttribute(k,v===true?'':String(v));
+  })}
+  for(var i=2;i<arguments.length;i++)add(el,arguments[i]);
+  return el;
+}
+function add(el,k){
+  if(k===null||k===undefined||k===false)return;
+  if(Array.isArray(k)){k.forEach(function(x){add(el,x)});return}
+  el.appendChild(typeof k==='object'?k:document.createTextNode(String(k)));
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function clip(s,n){return String(s===undefined||s===null?'':s).slice(0,n)}
+function num(v,min,max){var n=Number(v);if(!isFinite(n))return null;return Math.min(max,Math.max(min,n))}
+function intIn(v,min,max){var n=num(v,min,max);return n===null?min:Math.floor(n)}
+function pad2(n){return n<10?'0'+n:''+n}
+function todayISO(){var d=new Date();return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())}
+function validISO(s){return /^\d{4}-\d{2}-\d{2}$/.test(s||'')}
+function fmtDate(iso){
+  if(!validISO(iso))return '';
+  var p=iso.split('-').map(Number);
+  return new Date(p[0],p[1]-1,p[2]).toLocaleDateString(LOCALE[state.lang],{year:'numeric',month:'long',day:'numeric'});
+}
+function fmtMoney(n){
+  if(n===null||n===undefined||n==='')return t('onRequest');
+  try{return new Intl.NumberFormat(LOCALE[state.lang],{style:'currency',currency:state.currency,maximumFractionDigits:(n%1?2:0)}).format(n)}
+  catch(e){return String(n)+' '+state.currency}
+}
+function statusName(s){return t('s'+s.charAt(0).toUpperCase()+s.slice(1))}
+
+/* ---------- state ---------- */
+var state=blank(),tab='works',storageOk=true,pending=null,toastT=null,selWork='',certSel='sold',lab={cols:2,price:true,ed:true,sold:true},plist={only:false,avail:true};
+function guessLang(){var l=(navigator.language||'en').toLowerCase();return l.indexOf('es')===0?'es':l.indexOf('pt')===0?'pt':'en'}
+function guessCurrency(){var m=/-([A-Za-z]{2})$/.exec(navigator.language||'');var r=m?m[1].toUpperCase():'';var map={US:'USD',GB:'GBP',CA:'CAD',AU:'AUD',BR:'BRL',MX:'MXN',AR:'ARS',CO:'COP',CL:'CLP',CH:'CHF'};return map[r]||'EUR'}
+function blank(){return{app:'aek-exhibition-kit',v:1,lang:guessLang(),currency:guessCurrency(),artist:'',contact:'',exhibition:'',venue:'',place:'',issueDate:'',works:[]}}
+function newWork(){return{id:uid(),title:'',year:'',medium:'',dims:'',edSize:0,apCount:0,price:null,notes:'',copies:[],cond:{date:'',by:'',overall:'good',loc:'',details:''},cons:{consignee:'',contact:'',start:'',end:'',comm:'',ins:'gallery',notes:''}}}
+function buildCopies(w){
+  var want=[];
+  if(w.edSize<=0)want.push({kind:'unique',n:1,of:1});
+  else{for(var i=1;i<=w.edSize;i++)want.push({kind:'ed',n:i,of:w.edSize});for(var j=1;j<=w.apCount;j++)want.push({kind:'ap',n:j,of:w.apCount})}
+  var old={};w.copies.forEach(function(c){old[c.kind+':'+c.n]=c});
+  var out=[],used={};
+  want.forEach(function(x){var k=x.kind+':'+x.n,c=old[k];used[k]=1;
+    if(c){c.of=x.of;out.push(c)}else out.push({id:uid(),kind:x.kind,n:x.n,of:x.of,status:'available',buyer:'',date:'',sale:null})});
+  var extra=0;
+  w.copies.forEach(function(c){if(!used[c.kind+':'+c.n]&&c.status!=='available'){out.push(c);extra++}});
+  var ord={ed:0,ap:1,unique:2};
+  out.sort(function(a,b){return ord[a.kind]-ord[b.kind]||a.n-b.n});
+  w.copies=out;return extra;
+}
+function cleanWork(x){
+  x=x||{};var w=newWork();
+  w.id=clip(x.id,40)||w.id;w.title=clip(x.title,200);w.year=clip(x.year,20);w.medium=clip(x.medium,200);w.dims=clip(x.dims,120);
+  w.edSize=intIn(x.edSize,0,999);w.apCount=w.edSize>0?intIn(x.apCount,0,99):0;
+  var p=x.price===null||x.price===''||x.price===undefined?null:num(x.price,0,1e9);w.price=p;w.notes=clip(x.notes,1000);
+  var c=x.cond||{};w.cond={date:validISO(c.date)?c.date:'',by:clip(c.by,120),overall:CONDS.indexOf(c.overall)>=0?c.overall:'good',loc:clip(c.loc,160),details:clip(c.details,2000)};
+  var k=x.cons||{};w.cons={consignee:clip(k.consignee,160),contact:clip(k.contact,200),start:validISO(k.start)?k.start:'',end:validISO(k.end)?k.end:'',comm:k.comm===''||k.comm===null||k.comm===undefined?'':String(num(k.comm,0,100)===null?'':num(k.comm,0,100)),ins:INS.indexOf(k.ins)>=0?k.ins:'gallery',notes:clip(k.notes,2000)};
+  var seen={};
+  (Array.isArray(x.copies)?x.copies:[]).slice(0,1200).forEach(function(r){
+    if(!r||['ed','ap','unique'].indexOf(r.kind)<0)return;
+    var n=intIn(r.n,1,999),key=r.kind+':'+n;if(seen[key])return;seen[key]=1;
+    w.copies.push({id:clip(r.id,40)||uid(),kind:r.kind,n:n,of:1,status:STATUSES.indexOf(r.status)>=0?r.status:'available',buyer:clip(r.buyer,160),date:validISO(r.date)?r.date:'',sale:r.sale===null||r.sale===''||r.sale===undefined?null:num(r.sale,0,1e9)});
+  });
+  buildCopies(w);return w;
+}
+function cleanState(x){
+  var s=blank();x=x||{};
+  s.lang=LANGS.indexOf(x.lang)>=0?x.lang:s.lang;s.currency=CURR.indexOf(x.currency)>=0?x.currency:'EUR';
+  s.artist=clip(x.artist,160);s.contact=clip(x.contact,200);s.exhibition=clip(x.exhibition,200);s.venue=clip(x.venue,200);s.place=clip(x.place,120);s.issueDate=validISO(x.issueDate)?x.issueDate:'';
+  s.works=(Array.isArray(x.works)?x.works:[]).slice(0,500).map(cleanWork);
+  return s;
+}
+function load(){
+  try{var r=localStorage.getItem(KEY);if(r)state=cleanState(JSON.parse(r))}catch(e){storageOk=false}
+  try{localStorage.setItem(KEY+'_probe','1');localStorage.removeItem(KEY+'_probe')}catch(e){storageOk=false}
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));storageOk=true}catch(e){if(storageOk){storageOk=false;var b=document.getElementById('storewarn');if(b)b.style.display='block'}}}
+function toast(msg,err){
+  var old=document.querySelector('.toast');if(old)old.remove();
+  var el=h('div',{class:'toast'+(err?' err':''),role:'status',text:msg});document.body.appendChild(el);
+  clearTimeout(toastT);toastT=setTimeout(function(){el.remove()},4000);
+}
+function armed(btn,labelKey,sureKey,fn){
+  btn.addEventListener('click',function(){
+    if(pending===btn){pending=null;fn();return}
+    if(pending){pending.classList.remove('armed');pending.textContent=pending._label}
+    pending=btn;btn._label=t(labelKey);btn.classList.add('armed');btn.textContent=t(sureKey);
+    setTimeout(function(){if(pending===btn){pending=null;btn.classList.remove('armed');btn.textContent=t(labelKey)}},4000);
+  });
+}
+function copyLabel(c){
+  if(c.kind==='unique')return t('unique');
+  if(c.kind==='ap')return t('apLabel')+' '+c.n+'/'+c.of;
+  return c.n+'/'+c.of;
+}
+function workTitle(w){return w.title||t('untitled')}
+function edText(w){
+  if(w.edSize<=0)return t('unique');
+  var s=t('edOf',{n:w.edSize});if(w.apCount>0)s+=' + '+w.apCount+' '+t('apLabel');return s;
+}
+function countAvail(w){return w.copies.filter(function(c){return c.status==='available'}).length}
+function field(label,input,cls){return h('label',{class:'f'+(cls?' '+cls:'')},label,input)}
+function selectOf(opts,val,onch){
+  var s=h('select',{onchange:function(e){onch(e.target.value)}});
+  opts.forEach(function(o){s.appendChild(h('option',{value:o[0],text:o[1],selected:o[0]===val}))});return s;
+}
+function workOptions(){return state.works.map(function(w,i){return[w.id,(i+1)+'. '+workTitle(w)]})}
+function curWork(){
+  var w=state.works.filter(function(x){return x.id===selWork})[0];
+  if(!w&&state.works.length){w=state.works[0];selWork=w.id}
+  return w||null;
+}
+function artistLine(){return state.artist||'?'}
+
+/* ---------- sample ---------- */
+function sample(){
+  var US=guessCurrency()==='USD';
+  var s=blank();s.lang=state.lang;s.currency=US?'USD':'EUR';
+  s.artist='Alex Example';s.contact='alex@example.com · example.com';s.exhibition='Quiet Light';s.venue='Studio Gallery';s.place=US?'Brooklyn, NY':'Lisbon';s.issueDate=todayISO();
+  function mk(title,year,medium,dims,ed,ap,price){var w=newWork();w.title=title;w.year=year;w.medium=medium;w.dims=dims;w.edSize=ed;w.apCount=ap;w.price=price;buildCopies(w);return w}
+  var a=mk(US?'Harbor at Dusk':'Harbour at Dusk','2025','Giclée print on cotton paper',US?'16 × 20 in':'40 × 50 cm',10,2,320);
+  var b=mk('Red Chair','2024','Oil on canvas',US?'28 × 36 in':'70 × 90 cm',0,0,2400);
+  var c=mk('Study of Hands','2026','Linocut',US?'9 × 12 in':'24 × 30 cm',5,1,150);
+  a.copies[0].status='sold';a.copies[0].buyer='M. Santos';a.copies[0].date=todayISO();a.copies[0].sale=320;
+  a.copies[1].status='reserved';
+  b.copies[0].status='consigned';b.cons={consignee:'North Street Gallery',contact:'info@northstreet.example',start:todayISO(),end:'',comm:'40',ins:'gallery',notes:'Work stays on the gallery wall until sold or returned.'};
+  s.works=[a,b,c];return s;
+}
+
+/* ---------- views ---------- */
+var root=document.getElementById('app');
+function render(){
+  LI=LANGS.indexOf(state.lang);document.documentElement.lang=state.lang;
+  var y=window.scrollY;
+  root.textContent='';
+  var tabs=[['works','tWorks'],['labels','tLabels'],['prices','tPrices'],['certs','tCerts'],['reg','tReg'],['cond','tCond'],['cons','tCons'],['backup','tBackup']];
+  root.appendChild(h('header',{class:'top'},
+    h('div',null,h('p',{class:'brand',text:'ENTELEORA'}),h('h1',{text:t('title')}),h('p',{class:'tag',text:t('tag')})),
+    h('div',{class:'lang',role:'group','aria-label':'Language'},LANGS.map(function(l){
+      return h('button',{type:'button','aria-pressed':String(state.lang===l),text:l.toUpperCase(),onclick:function(){state.lang=l;save();render()}})}))
+  ));
+  root.appendChild(h('div',{id:'storewarn',class:'warn noprint',style:storageOk?'display:none':'display:block',text:t('noStore')}));
+  root.appendChild(h('nav',{class:'tabs'},tabs.map(function(x){
+    return h('button',{type:'button','aria-pressed':String(tab===x[0]),text:t(x[1]),onclick:function(){tab=x[0];pending=null;render();window.scrollTo(0,0)}})})));
+  var v={works:vWorks,labels:vLabels,prices:vPrices,certs:vCerts,reg:vReg,cond:vCond,cons:vCons,backup:vBackup}[tab]();
+  root.appendChild(v);
+  root.appendChild(h('footer',{text:t('foot',{v:VERSION})}));
+  window.scrollTo(0,y);
+}
+function printBtn(){return h('button',{type:'button',class:'primary',text:t('print'),onclick:function(){window.print()}})}
+function emptyMsg(){
+  var go=function(){state=sample();save();render()};
+  var b=h('button',{type:'button',class:'primary',text:t('sample'),onclick:go});
+  return h('div',{class:'empty noprint'},
+    h('p',{class:'empty-h',text:'Start in 30 seconds'}),
+    h('p',{text:t('noWorks')}),
+    h('div',{class:'row',style:'justify-content:center;margin-top:10px'},b))}
+function sheetHead(title,sub){
+  return[h('h2',{text:title}),h('p',{class:'sub',text:sub.filter(Boolean).join(' · ')})];
+}
+
+function extraCount(w){
+  return w.copies.filter(function(c){
+    if(c.kind==='unique')return w.edSize>0;
+    if(c.kind==='ed')return c.n>w.edSize;
+    return c.n>w.apCount;
+  }).length;
+}
+function sampleRow(){
+  var smp=h('button',{type:'button',text:t('sample')});
+  var go=function(){state=sample();save();render()};
+  if(state.works.length)armed(smp,'sample','sampleSure',go);else smp.addEventListener('click',go);
+  return h('div',{class:'row gap'},
+    h('button',{type:'button',class:'primary',text:t('addWork'),onclick:function(){var w=newWork();buildCopies(w);state.works.push(w);selWork=w.id;save();render()}}),
+    smp);
+}
+function vWorks(){
+  var box=h('div');
+  var d=h('section',{class:'panel'},h('h2',{text:t('details')}),
+    h('div',{class:'grid'},
+      field(t('artist'),h('input',{type:'text',maxlength:160,value:state.artist,oninput:function(e){state.artist=clip(e.target.value,160);save()}})),
+      field(t('contact'),h('input',{type:'text',maxlength:200,value:state.contact,oninput:function(e){state.contact=clip(e.target.value,200);save()}})),
+      field(t('exhibition'),h('input',{type:'text',maxlength:200,value:state.exhibition,oninput:function(e){state.exhibition=clip(e.target.value,200);save()}})),
+      field(t('venue'),h('input',{type:'text',maxlength:200,value:state.venue,oninput:function(e){state.venue=clip(e.target.value,200);save()}})),
+      field(t('place'),h('input',{type:'text',maxlength:120,value:state.place,oninput:function(e){state.place=clip(e.target.value,120);save()}})),
+      field(t('currency'),selectOf(CURR.map(function(c){return[c,c]}),state.currency,function(v){state.currency=v;save()}))
+    ),
+    sampleRow());
+  box.appendChild(d);
+  if(!state.works.length){box.appendChild(emptyMsg());box.appendChild(importBox())}
+  state.works.forEach(function(w,i){
+    var xc=extraCount(w);
+    var warn=xc?h('div',{class:'warn',text:t('extraKept',{n:xc})}):null;
+    var meta=h('div',{class:'note',text:w.copies.length===1?t('copyOne'):t('copiesN',{n:w.copies.length})});
+    function rebuild(){buildCopies(w);save()}
+    var delBtn=h('button',{type:'button',class:'danger',text:t('del')});
+    armed(delBtn,'del','delSure',function(){state.works=state.works.filter(function(x){return x!==w});save();render()});
+    box.appendChild(h('section',{class:'work'},
+      h('h3',{text:t('workN',{n:i+1})}),
+      h('div',{class:'grid'},
+        field(t('wTitle'),h('input',{type:'text',maxlength:200,value:w.title,oninput:function(e){w.title=clip(e.target.value,200);save()}})),
+        field(t('wYear'),h('input',{type:'text',maxlength:20,value:w.year,oninput:function(e){w.year=clip(e.target.value,20);save()}})),
+        field(t('wMedium'),h('input',{type:'text',maxlength:200,value:w.medium,oninput:function(e){w.medium=clip(e.target.value,200);save()}})),
+        field(t('wDims'),h('input',{type:'text',maxlength:120,value:w.dims,oninput:function(e){w.dims=clip(e.target.value,120);save()}})),
+        field(t('wEd'),h('input',{type:'number',min:0,max:999,step:1,value:String(w.edSize),onchange:function(e){w.edSize=intIn(e.target.value,0,999);if(w.edSize<=0)w.apCount=0;e.target.value=String(w.edSize);rebuild();render()}})),
+        field(t('wAp'),h('input',{type:'number',min:0,max:99,step:1,value:String(w.apCount),disabled:w.edSize<=0,onchange:function(e){w.apCount=intIn(e.target.value,0,99);e.target.value=String(w.apCount);rebuild();render()}})),
+        field(t('wPrice')+' ('+state.currency+')',h('input',{type:'number',min:0,step:'any',value:w.price===null?'':String(w.price),onchange:function(e){w.price=e.target.value===''?null:num(e.target.value,0,1e9);save()}})),
+        field(t('wNotes'),h('input',{type:'text',maxlength:1000,value:w.notes,oninput:function(e){w.notes=clip(e.target.value,1000);save()}}))
+      ),
+      warn,
+      h('div',{class:'row gap'},meta,h('span',{style:'flex:1'}),delBtn)
+    ));
+  });
+  return box;
+}
+
+function vLabels(){
+  var box=h('div');
+  box.appendChild(h('section',{class:'panel noprint'},
+    h('div',{class:'row'},
+      field(t('colsPer'),selectOf([['1','1'],['2','2'],['3','3']],String(lab.cols),function(v){lab.cols=intIn(v,1,3);render()})),
+      chk(t('showPrice'),lab.price,function(v){lab.price=v;render()}),
+      chk(t('showEdition'),lab.ed,function(v){lab.ed=v;render()}),
+      chk(t('showSold'),lab.sold,function(v){lab.sold=v;render()}),
+      h('span',{style:'flex:1'}),printBtn())));
+  if(!state.works.length){box.appendChild(emptyMsg());return box}
+  var g=h('div',{class:'labels c'+lab.cols});
+  state.works.forEach(function(w){
+    var soldAll=w.copies.length>0&&w.copies.every(function(c){return c.status==='sold'});
+    g.appendChild(h('div',{class:'label'},
+      h('div',{class:'a',text:artistLine()}),
+      h('div',{class:'t',text:workTitle(w)+(w.year?', '+w.year:'')}),
+      h('div',{class:'d'},w.medium?h('div',{text:w.medium}):null,w.dims?h('div',{text:w.dims}):null,lab.ed?h('div',{text:edText(w)}):null),
+      (lab.price||lab.sold)?h('div',{class:'p',text:(lab.sold&&soldAll)?t('soldMark'):(lab.price?fmtMoney(w.price):'')}):null));
+  });
+  box.appendChild(h('div',{class:'sheet'},g));
+  return box;
+}
+function chk(label,val,fn){return h('label',{class:'chk'},h('input',{type:'checkbox',checked:val,onchange:function(e){fn(e.target.checked)}}),label)}
+
+function vPrices(){
+  var box=h('div');
+  box.appendChild(h('section',{class:'panel noprint'},h('div',{class:'row'},
+    chk(t('onlyAvail'),plist.only,function(v){plist.only=v;render()}),
+    chk(t('showAvail'),plist.avail,function(v){plist.avail=v;render()}),
+    h('span',{style:'flex:1'}),printBtn())));
+  if(!state.works.length){box.appendChild(emptyMsg());return box}
+  var rows=state.works.filter(function(w){return !plist.only||countAvail(w)>0});
+  var tb=h('tbody');
+  rows.forEach(function(w){
+    var n=w.copies.filter(function(c){return c.status!=='notforsale'}).length||w.copies.length;
+    var av=countAvail(w);
+    var availTxt=w.edSize<=0?(w.copies[0]?statusName(w.copies[0].status):''):t('availOf',{a:av,n:n});
+    tb.appendChild(h('tr',null,
+      h('td',null,h('strong',{text:workTitle(w)+(w.year?', '+w.year:'')})),
+      h('td',{text:[w.medium,w.dims].filter(Boolean).join(' · ')}),
+      plist.avail?h('td',{text:availTxt}):null,
+      h('td',{text:fmtMoney(w.price)})));
+  });
+  var sheet=h('div',{class:'sheet'},sheetHead(t('priceListH')+(state.exhibition?' — '+state.exhibition:''),[state.artist,state.venue,fmtDate(state.issueDate||todayISO())]),
+    h('table',null,h('thead',null,h('tr',null,h('th',{text:t('colWork')}),h('th',{text:t('colDetails')}),plist.avail?h('th',{text:t('colAvail')}):null,h('th',{text:t('colPrice')}))),tb),
+    h('p',{class:'sub',style:'margin-top:8px',text:t('pricesIn',{c:state.currency})+(state.contact?' '+state.contact:'')}));
+  box.appendChild(sheet);return box;
+}
+
+function certList(){
+  var out=[];
+  state.works.forEach(function(w){w.copies.forEach(function(c){
+    if(certSel==='all'||(certSel==='sold'&&c.status==='sold')||certSel===c.id)out.push({w:w,c:c});
+  })});return out;
+}
+function vCerts(){
+  var box=h('div');
+  var opts=[['sold',t('certSold')],['all',t('certAll')]];
+  state.works.forEach(function(w){w.copies.forEach(function(c){opts.push([c.id,workTitle(w)+' — '+copyLabel(c)])})});
+  if(!opts.some(function(o){return o[0]===certSel}))certSel='sold';
+  box.appendChild(h('section',{class:'panel noprint'},h('div',{class:'row'},
+    field(t('certWhich'),selectOf(opts,certSel,function(v){certSel=v;render()})),
+    field(t('issueDate'),h('input',{type:'date',value:state.issueDate||todayISO(),onchange:function(e){state.issueDate=validISO(e.target.value)?e.target.value:'';save();render()}})),
+    h('span',{style:'flex:1'}),printBtn())));
+  if(!state.works.length){box.appendChild(emptyMsg());return box}
+  var list=certList();
+  if(!list.length){box.appendChild(h('div',{class:'empty noprint',text:t('noCerts')}));return box}
+  var wrap=h('div',{class:'sheet'});
+  var date=fmtDate(state.issueDate||todayISO());
+  list.forEach(function(x){
+    var w=x.w,c=x.c;
+    var issued=state.place?t('issuedAt',{place:state.place,date:date}):t('issuedOn',{date:date});
+    wrap.appendChild(h('section',{class:'cert'},
+      h('div',{class:'a',style:'text-align:center;letter-spacing:.08em;text-transform:uppercase;font-size:12px',text:artistLine()}),
+      h('h2',{text:t('certH')}),
+      h('p',{class:'body',text:t('certBody',{artist:artistLine()})}),
+      h('dl',null,
+        h('dt',{text:t('lTitle')}),h('dd',{text:workTitle(w)}),
+        w.year?[h('dt',{text:t('lYear')}),h('dd',{text:w.year})]:null,
+        w.medium?[h('dt',{text:t('lMedium')}),h('dd',{text:w.medium})]:null,
+        w.dims?[h('dt',{text:t('lDims')}),h('dd',{text:w.dims})]:null,
+        h('dt',{text:t('lEdition')}),h('dd',{text:c.kind==='unique'?t('unique'):copyLabel(c)+(c.kind==='ed'?' ('+t('edOf',{n:c.of})+')':'')}),
+        c.buyer?[h('dt',{text:t('lOwner')}),h('dd',{text:c.buyer})]:null),
+      h('p',{class:'body',text:issued}),
+      h('div',{class:'sig'},h('div',{text:t('sigArtist')+(state.artist?' · '+state.artist:'')}),h('div',{text:t('sigDate')})),
+      h('p',{class:'disc',text:t('certDisc')+(state.contact?' '+state.contact:'')})));
+  });
+  box.appendChild(wrap);return box;
+}
+
+function vReg(){
+  var box=h('div');
+  if(!state.works.length){box.appendChild(emptyMsg());return box}
+  var pills=h('div',{class:'pills'});
+  function setPills(){pills.textContent='';var s=0,a=0,v=0;state.works.forEach(function(w){w.copies.forEach(function(c){if(c.status==='sold'){s++;v+=(c.sale!==null?c.sale:(w.price||0))}if(c.status==='available')a++})});
+    pills.appendChild(h('span',{class:'pill',text:t('sumSold',{n:s})}));pills.appendChild(h('span',{class:'pill',text:t('sumAvail',{n:a})}));pills.appendChild(h('span',{class:'pill',text:t('sumValue',{v:fmtMoney(v)})}))}
+  setPills();
+  var tb=h('tbody');
+  state.works.forEach(function(w){w.copies.forEach(function(c){
+    tb.appendChild(h('tr',null,
+      h('td',null,h('strong',{text:workTitle(w)}),h('div',{class:'note',text:copyLabel(c)})),
+      h('td',null,selectOf(STATUSES.map(function(s){return[s,statusName(s)]}),c.status,function(v){
+        c.status=v;if(v==='sold'&&!c.date)c.date=todayISO();save();setPills()})),
+      h('td',null,h('input',{type:'text',maxlength:160,value:c.buyer,'aria-label':t('regBuyer'),oninput:function(e){c.buyer=clip(e.target.value,160);save()}})),
+      h('td',null,h('input',{type:'date',value:c.date,'aria-label':t('regDate'),onchange:function(e){c.date=validISO(e.target.value)?e.target.value:'';save()}})),
+      h('td',null,h('input',{type:'number',min:0,step:'any',value:c.sale===null?'':String(c.sale),placeholder:w.price===null?'':String(w.price),'aria-label':t('regPrice'),onchange:function(e){c.sale=e.target.value===''?null:num(e.target.value,0,1e9);save();setPills()}}))));
+  })});
+  box.appendChild(h('section',{class:'panel'},h('h2',{text:t('regH')}),pills,
+    h('div',{class:'tw'},h('table',null,h('thead',null,h('tr',null,h('th',{text:t('regCopy')}),h('th',{text:t('regStatus')}),h('th',{text:t('regBuyer')}),h('th',{text:t('regDate')}),h('th',{text:t('regPrice')}))),tb))));
+  return box;
+}
+
+function workPicker(){
+  if(!curWork())return null;
+  return field(t('pickWork'),selectOf(workOptions(),selWork,function(v){selWork=v;render()}));
+}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function liveSheet(box,build){
+  var holder=h('div');
+  function draw(){holder.textContent='';holder.appendChild(build())}
+  draw();box.appendChild(holder);return draw;
+}
+function vCond(){
+  var box=h('div');var w=curWork();
+  if(!w){box.appendChild(emptyMsg());return box}
+  var c=w.cond,draw;
+  function sheet(){
+    return h('div',{class:'sheet plain'},sheetHead(t('condH'),[state.artist,state.exhibition]),
+      h('dl',{class:'kv'},
+        h('dt',{text:t('lTitle')}),h('dd',{text:workTitle(w)+(w.year?', '+w.year:'')}),
+        h('dt',{text:t('lMedium')}),h('dd',{text:w.medium}),
+        h('dt',{text:t('lDims')}),h('dd',{text:w.dims}),
+        h('dt',{text:t('lEdition')}),h('dd',{text:edText(w)}),
+        h('dt',{text:t('cDate')}),h('dd',{text:fmtDate(c.date)}),
+        h('dt',{text:t('cBy')}),h('dd',{text:c.by}),
+        h('dt',{text:t('cOverall')}),h('dd',{text:t('cond'+cap(c.overall))}),
+        h('dt',{text:t('cLoc')}),h('dd',{text:c.loc})),
+      h('p',{class:'sub',text:t('cDetails')}),h('div',{class:'block',text:c.details}),
+      h('div',{class:'sig'},h('div',{text:t('sigInspector')}),h('div',{text:t('sigRecipient')})));
+  }
+  box.appendChild(h('section',{class:'panel noprint'},h('div',{class:'grid'},
+    workPicker(),
+    field(t('cDate'),h('input',{type:'date',value:c.date,onchange:function(e){c.date=validISO(e.target.value)?e.target.value:'';save();draw()}})),
+    field(t('cBy'),h('input',{type:'text',maxlength:120,value:c.by,oninput:function(e){c.by=clip(e.target.value,120);save();draw()}})),
+    field(t('cOverall'),selectOf(CONDS.map(function(k){return[k,t('cond'+cap(k))]}),c.overall,function(v){c.overall=v;save();draw()})),
+    field(t('cLoc'),h('input',{type:'text',maxlength:160,value:c.loc,oninput:function(e){c.loc=clip(e.target.value,160);save();draw()}}))),
+    h('div',{class:'row gap'},field(t('cDetails'),h('textarea',{maxlength:2000,value:c.details,oninput:function(e){c.details=clip(e.target.value,2000);save();draw()}}))),
+    h('div',{class:'row gap'},printBtn())));
+  draw=liveSheet(box,sheet);
+  return box;
+}
+
+function vCons(){
+  var box=h('div');var w=curWork();
+  if(!w){box.appendChild(emptyMsg());return box}
+  var k=w.cons,draw;
+  function sheet(){
+    var comm=k.comm===''?null:Number(k.comm);
+    var net=(comm!==null&&w.price!==null)?w.price*(1-comm/100):null;
+    return h('div',{class:'sheet plain'},sheetHead(t('consH'),[state.exhibition,fmtDate(state.issueDate||todayISO())]),
+      h('dl',{class:'kv'},
+        h('dt',{text:t('sigConsignor')}),h('dd',{text:artistLine()+(state.contact?'\n'+state.contact:'')}),
+        h('dt',{text:t('kConsignee')}),h('dd',{text:k.consignee+(k.contact?'\n'+k.contact:'')}),
+        h('dt',{text:t('lTitle')}),h('dd',{text:workTitle(w)+(w.year?', '+w.year:'')}),
+        h('dt',{text:t('lMedium')}),h('dd',{text:w.medium}),
+        h('dt',{text:t('lDims')}),h('dd',{text:w.dims}),
+        h('dt',{text:t('lEdition')}),h('dd',{text:edText(w)}),
+        h('dt',{text:t('kAgreed')}),h('dd',{text:fmtMoney(w.price)}),
+        h('dt',{text:t('kComm')}),h('dd',{text:comm===null?'':comm+' %'}),
+        h('dt',{text:t('kNet')}),h('dd',{text:net===null?'':fmtMoney(Math.round(net*100)/100)}),
+        h('dt',{text:t('kStart')+' / '+t('kEnd')}),h('dd',{text:[fmtDate(k.start),fmtDate(k.end)].filter(Boolean).join(' — ')}),
+        h('dt',{text:t('kIns')}),h('dd',{text:t('ins'+cap(k.ins))})),
+      h('p',{class:'sub',text:t('kNotes')}),h('div',{class:'block',text:k.notes}),
+      h('div',{class:'sig'},h('div',{text:t('sigConsignor')}),h('div',{text:t('sigConsignee')})),
+      h('p',{class:'sub',style:'margin-top:10mm',text:t('consDisc')}));
+  }
+  box.appendChild(h('section',{class:'panel noprint'},h('div',{class:'grid'},
+    workPicker(),
+    field(t('kConsignee'),h('input',{type:'text',maxlength:160,value:k.consignee,oninput:function(e){k.consignee=clip(e.target.value,160);save();draw()}})),
+    field(t('kConsContact'),h('input',{type:'text',maxlength:200,value:k.contact,oninput:function(e){k.contact=clip(e.target.value,200);save();draw()}})),
+    field(t('kStart'),h('input',{type:'date',value:k.start,onchange:function(e){k.start=validISO(e.target.value)?e.target.value:'';save();draw()}})),
+    field(t('kEnd'),h('input',{type:'date',value:k.end,onchange:function(e){k.end=validISO(e.target.value)?e.target.value:'';save();draw()}})),
+    field(t('kComm'),h('input',{type:'number',min:0,max:100,step:'any',value:k.comm,oninput:function(e){var n=e.target.value===''?'':num(e.target.value,0,100);k.comm=n===null?'':String(n);save();draw()}})),
+    field(t('kIns'),selectOf(INS.map(function(i){return[i,t('ins'+cap(i))]}),k.ins,function(v){k.ins=v;save();draw()}))),
+    h('div',{class:'row gap'},field(t('kNotes'),h('textarea',{maxlength:2000,value:k.notes,oninput:function(e){k.notes=clip(e.target.value,2000);save();draw()}}))),
+    h('div',{class:'row gap'},printBtn())));
+  draw=liveSheet(box,sheet);
+  return box;
+}
+
+/* ---------- backup / export ---------- */
+function download(name,text,mime){
+  var blob=new Blob([text],{type:mime});var url=URL.createObjectURL(blob);
+  var a=h('a',{href:url,download:name});document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url)},2000);
+}
+function csvCell(v){
+  var s=String(v===null||v===undefined?'':v);
+  if(/^[=+\-@\t\r]/.test(s))s="'"+s;
+  return /[",\n\r;]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+}
+function exportCsv(){
+  var rows=[['work','year','medium','dimensions','copy','status','buyer','sale_date','sale_price','list_price','currency']];
+  state.works.forEach(function(w){w.copies.forEach(function(c){
+    rows.push([workTitle(w),w.year,w.medium,w.dims,copyLabel(c),c.status,c.buyer,c.date,c.sale===null?'':c.sale,w.price===null?'':w.price,state.currency]);
+  })});
+  download('edition-register.csv','\ufeff'+rows.map(function(r){return r.map(csvCell).join(',')}).join('\r\n'),'text/csv;charset=utf-8');
+}
+function parseCsv(text){
+  text=String(text).replace(/^\ufeff/,'');
+  var first=text.split(/\r?\n/)[0]||'',sep=(first.split(';').length>first.split(',').length)?';':(first.indexOf('\t')>=0&&first.indexOf(',')<0?'\t':',');
+  var rows=[],row=[],cell='',q=false,i,ch;
+  for(i=0;i<text.length;i++){ch=text[i];
+    if(q){if(ch==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}else cell+=ch}
+    else if(ch==='"')q=true;
+    else if(ch===sep){row.push(cell);cell=''}
+    else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell=''}
+    else cell+=ch;
+    if(rows.length>2000)break}
+  if(cell!==''||row.length){row.push(cell);rows.push(row)}
+  return rows.filter(function(r){return r.some(function(c){return String(c).trim()!==''})});
+}
+function csvWorks(text){
+  var rows=parseCsv(text);if(rows.length<2)return [];
+  var hd=rows[0].map(function(x){return String(x).trim().toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()});
+  function col(names){for(var i=0;i<names.length;i++){var k=hd.indexOf(names[i]);if(k>=0)return k}return -1}
+  var C={title:col(['title','name','work','artwork','artwork title','product title']),year:col(['year','date','year made']),medium:col(['medium','technique','materials','material','type','product type']),dims:col(['dimensions','dims','size','sizes','image size','paper size']),ed:col(['edition','edition size','editions','ed','run']),ap:col(['proofs','ap','aps','artist proofs','artists proofs','artist s proofs']),price:col(['price','list price','retail price','variant price','amount'])};
+  if(C.title<0)return [];
+  var out=[],seen={};
+  rows.slice(1).forEach(function(r){
+    var g=function(k){return C[k]>=0?String(r[C[k]]||'').trim():''};
+    var title=g('title');if(!title||seen[title.toLowerCase()])return;seen[title.toLowerCase()]=1;
+    var w=newWork();w.title=clip(title,200);w.year=clip(g('year'),20);w.medium=clip(g('medium'),200);w.dims=clip(g('dims'),120);
+    var ed=g('ed').match(/(\d+)\s*$/);w.edSize=ed?intIn(ed[1],0,999):0;
+    var ap=g('ap').match(/\d+/);w.apCount=w.edSize>0&&ap?intIn(ap[0],0,99):0;
+    var p=g('price').replace(/[^0-9.,]/g,'');if(/,\d{2}$/.test(p)&&p.indexOf('.')<0)p=p.replace(',','.');p=p.replace(/,/g,'');
+    w.price=p===''?null:num(p,0,1e9);buildCopies(w);out.push(w);
+  });
+  return out.slice(0,500-state.works.length);
+}
+function importBox(){
+  var pend=h('div',{class:'row gap'});
+  var file=h('input',{type:'file',accept:'.csv,text/csv,text/plain','aria-label':t('imPick'),onchange:function(e){
+    var f=e.target.files&&e.target.files[0];pend.textContent='';if(!f)return;
+    if(f.size>5*1024*1024){toast(t('bkBig'),true);return}
+    var r=new FileReader();
+    r.onload=function(){var ws=csvWorks(r.result);
+      if(!ws.length){toast(t('imNone'),true);return}
+      pend.appendChild(h('button',{type:'button',class:'primary',text:t('imConfirm',{n:ws.length}),onclick:function(){state.works=state.works.concat(ws);save();tab='works';render();toast(t('imDone',{n:ws.length}))}}));
+      pend.appendChild(h('span',{class:'note',text:ws.slice(0,3).map(function(w){return w.title}).join(', ')+(ws.length>3?'…':'')}));
+    };
+    r.onerror=function(){toast(t('bkBad'),true)};r.readAsText(f);
+  }});
+  return h('section',{class:'panel'},h('h2',{text:t('imH')}),h('p',{class:'note',text:t('imHelp')}),h('div',{class:'row gap'},field(t('imPick'),file)),pend);
+}
+function vBackup(){
+  var box=h('div');
+  var pend=h('div',{class:'row gap'});
+  var file=h('input',{type:'file',accept:'application/json,.json','aria-label':t('bkRestore'),onchange:function(e){
+    var f=e.target.files&&e.target.files[0];pend.textContent='';if(!f)return;
+    if(f.size>5*1024*1024){toast(t('bkBig'),true);return}
+    var r=new FileReader();
+    r.onload=function(){
+      var data=null;try{data=JSON.parse(String(r.result))}catch(x){data=null}
+      if(!data||data.app!=='aek-exhibition-kit'||!Array.isArray(data.works)){toast(t('bkBad'),true);return}
+      var next=cleanState(data);
+      var b=h('button',{type:'button',class:'primary',text:t('bkConfirm',{n:next.works.length}),onclick:function(){state=next;save();tab='works';render();toast(t('bkDone'))}});
+      pend.appendChild(b);
+    };
+    r.onerror=function(){toast(t('bkBad'),true)};
+    r.readAsText(f);
+  }});
+  var clr=h('button',{type:'button',class:'danger',text:t('clearAll')});
+  armed(clr,'clearAll','clearSure',function(){state=blank();try{localStorage.removeItem(KEY)}catch(e){}save();render();toast(t('cleared'))});
+  box.appendChild(h('section',{class:'panel'},h('h2',{text:t('bkH')}),
+    h('div',{class:'row'},
+      h('button',{type:'button',class:'primary',text:t('bkSave'),onclick:function(){download('exhibition-kit-backup-'+todayISO()+'.json',JSON.stringify(state,null,1),'application/json');toast(t('bkSaved'))}}),
+      h('button',{type:'button',text:t('bkCsv'),onclick:exportCsv}),
+      clr),
+    h('div',{class:'row gap'},field(t('bkRestore'),file)),pend));
+  box.appendChild(importBox());
+  box.appendChild(h('section',{class:'panel'},h('h2',{text:t('aboutH')}),h('p',{text:t('about1')}),h('p',{text:t('about2')}),h('p',{text:t('about3')})));
+  return box;
+}
+
+load();
+render();
+})();
+</script>
+</body>
+</html>
