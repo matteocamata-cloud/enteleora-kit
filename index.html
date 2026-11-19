@@ -7,6 +7,11 @@
 <meta name="description" content="Wall labels, price lists, certificates of authenticity and an edition register for artists. Free, in your browser, no account.">
 <title>Exhibition &amp; Edition Kit</title>
 <style>
+.register-group{border-top:1px solid var(--line);padding:10px 0}
+.register-group summary{cursor:pointer;font-weight:600}
+.register-group .tw{margin:8px 0}
+.register-batch{margin:12px 0}
+
 :root{--bg:#f6f4ef;--card:#fff;--ink:#1d1b18;--mute:#6b665e;--line:#ddd8cd;--acc:#2f4a3f;--acc2:#e8efe9;--warn:#8a4b00;--warnbg:#fff3df;--bad:#9b1c1c}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -135,7 +140,7 @@ footer{letter-spacing:.04em}
 (function(){
 'use strict';
 var LANGS=['en','es','pt'],NAVL=(typeof navigator!=='undefined'&&navigator.language)||'en-US',LOCALE={en:/^en-[A-Za-z]{2}$/.test(NAVL)?NAVL:'en-US',es:'es-ES',pt:'pt-BR'};
-var KEY='aek_exhibition_kit_v1',VERSION='1.2.0';
+var KEY='aek_exhibition_kit_v1',VERSION='1.3.0';
 var STATUSES=['available','reserved','sold','consigned','notforsale'];
 var CURR=['EUR','USD','GBP','BRL','MXN','CHF','CAD','AUD','ARS','COP','CLP'];
 var CONDS=['excellent','good','fair','poor'];
@@ -143,6 +148,15 @@ var INS=['gallery','artist','shared'];
 
 /* ---------- text: key -> [English, Spanish, Brazilian Portuguese] ---------- */
 var S={
+openEdition:["Open edition","Edición abierta","Edição aberta"],
+addOpenCopy:["Add a copy record","Añadir registro de un ejemplar","Adicionar registro de um exemplar"],
+openCopy:["Open edition · record {n}","Edición abierta · registro {n}","Edição aberta · registro {n}"],
+regSelect:["Select copy for batch date","Seleccionar ejemplar para fecha en lote","Selecionar exemplar para data em lote"],
+regDateFormat:["Sale date (YYYY-MM-DD)","Fecha de venta (AAAA-MM-DD)","Data de venda (AAAA-MM-DD)"],
+regBatch:["Apply date to {n} selected","Aplicar fecha a {n} seleccionados","Aplicar data a {n} selecionados"],
+regBadDate:["Enter a valid date as YYYY-MM-DD.","Introduce una fecha válida como AAAA-MM-DD.","Digite uma data válida como AAAA-MM-DD."],
+unpriced:["Sold copies without a recorded sale price: {n}","Ejemplares vendidos sin precio registrado: {n}","Exemplares vendidos sem preço registrado: {n}"],
+imExisting:["{n} matching catalogue rows skipped. Sale dates and individual sale records are not imported.","Se omitieron {n} filas coincidentes del catálogo. No se importan fechas ni ventas individuales.","{n} linhas correspondentes do catálogo foram ignoradas. Datas e vendas individuais não são importadas."],
 title:['Exhibition & Edition Kit','Kit de Exposición y Ediciones','Kit de Exposição e Edições'],
 tag:['Wall labels, price list, certificates of authenticity, edition register, condition reports and consignment notes from one list of works. Runs in your browser, no account. Your data stays on this computer.','Cartelas de sala, lista de precios, certificados de autenticidad, registro de ediciones, informes de estado y notas de consignación a partir de una sola lista de obras. Funciona en tu navegador, sin cuenta. Tus datos se quedan en este ordenador.','Legendas de parede, lista de preços, certificados de autenticidade, registro de edições, relatórios de estado e notas de consignação a partir de uma única lista de obras. Funciona no seu navegador, sem conta. Seus dados ficam neste computador.'],
 tWorks:['Works','Obras','Obras'],tLabels:['Wall labels','Cartelas de sala','Legendas'],tPrices:['Price list','Lista de precios','Lista de preços'],tCerts:['Certificates','Certificados','Certificados'],tReg:['Edition register','Registro de ediciones','Registro de edições'],tCond:['Condition report','Informe de estado','Relatório de conservação'],tCons:['Consignment','Consignación','Consignação'],tBackup:['Import & backup','Importar y copia','Importar e backup'],
@@ -189,7 +203,7 @@ insGallery:['Gallery','Galería','Galeria'],insArtist:['Artist','Artista','Artis
 kAgreed:['Agreed price','Precio acordado','Preço acordado'],kNet:['Net to the artist','Importe neto para el artista','Valor líquido para o artista'],
 consDisc:['This note is a record of what both parties have agreed. It is not a legal contract.','Esta nota es un registro de lo acordado por ambas partes. No es un contrato legal.','Esta nota é um registro do que ambas as partes combinaram. Não é um contrato legal.'],
 sigConsignor:['Artist (consignor)','Artista (consignante)','Artista (consignante)'],sigConsignee:['Gallery (consignee)','Galería (consignatario)','Galeria (consignatário)'],
-imH:['Import works from a spreadsheet','Importar obras desde una hoja de cálculo','Importar obras de uma planilha'],imHelp:['Choose a CSV file (Excel, Google Sheets, Numbers or a Shopify product export). Columns we read: title, year, medium (or type), dimensions (or size), edition, proofs (AP), price (or Variant Price). Works are added after the ones you already have.','Elige un archivo CSV (Excel, Google Sheets, Numbers o exportación de productos de Shopify). Columnas: title, year, medium, dimensions, edition, proofs, price. Las obras se añaden después de las que ya tienes.','Escolha um arquivo CSV (Excel, Google Sheets, Numbers ou exportação de produtos do Shopify). Colunas: title, year, medium, dimensions, edition, proofs, price. As obras são adicionadas depois das que você já tem.'],imPick:['CSV file','Archivo CSV','Arquivo CSV'],imConfirm:['Add {n} works','Añadir {n} obras','Adicionar {n} obras'],imNone:['No works found. Check that the first row has column names such as Title and Price.','No se encontraron obras. Comprueba que la primera fila tenga nombres de columna como Title y Price.','Nenhuma obra encontrada. Verifique se a primeira linha tem nomes de colunas como Title e Price.'],imDone:['{n} works added.','{n} obras añadidas.','{n} obras adicionadas.'],
+imH:['Import works from a spreadsheet','Importar obras desde una hoja de cálculo','Importar obras de uma planilha'],imHelp:['Choose a CSV file (Excel, Google Sheets, Numbers or a Shopify product export). Columns we read: title, year, medium (or type), dimensions (or size), edition, proofs (AP), price (or Variant Price). This imports catalogue rows only. Matching works are skipped. Individual sales and dates stay in your spreadsheet.','Elige un archivo CSV (Excel, Google Sheets, Numbers o exportación de productos de Shopify). Columnas: title, year, medium, dimensions, edition, proofs, price. Importa solo el catálogo y omite las obras coincidentes. Las ventas y fechas quedan en tu hoja de cálculo.','Escolha um arquivo CSV (Excel, Google Sheets, Numbers ou exportação de produtos do Shopify). Colunas: title, year, medium, dimensions, edition, proofs, price. Importa apenas o catálogo e ignora obras correspondentes. As vendas e datas ficam na sua planilha.'],imPick:['CSV file','Archivo CSV','Arquivo CSV'],imConfirm:['Add {n} works','Añadir {n} obras','Adicionar {n} obras'],imNone:['No works found. Check that the first row has column names such as Title and Price.','No se encontraron obras. Comprueba que la primera fila tenga nombres de columna como Title y Price.','Nenhuma obra encontrada. Verifique se a primeira linha tem nomes de colunas como Title e Price.'],imDone:['{n} works added.','{n} obras añadidas.','{n} obras adicionadas.'],
 bkH:['Backup & restore','Copia de seguridad y restauración','Backup e restauração'],bkSave:['Download backup (JSON)','Descargar copia (JSON)','Baixar backup (JSON)'],bkCsv:['Export register (CSV)','Exportar registro (CSV)','Exportar registro (CSV)'],bkRestore:['Restore from a backup file','Restaurar desde un archivo de copia','Restaurar de um arquivo de backup'],
 bkConfirm:['Replace current data with {n} works','Reemplazar los datos actuales con {n} obras','Substituir os dados atuais por {n} obras'],
 bkBad:['This file is not a valid backup.','Este archivo no es una copia válida.','Este arquivo não é um backup válido.'],bkBig:['This file is too large.','Este archivo es demasiado grande.','Este arquivo é grande demais.'],
@@ -230,7 +244,11 @@ function num(v,min,max){var n=Number(v);if(!isFinite(n))return null;return Math.
 function intIn(v,min,max){var n=num(v,min,max);return n===null?min:Math.floor(n)}
 function pad2(n){return n<10?'0'+n:''+n}
 function todayISO(){var d=new Date();return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())}
-function validISO(s){return /^\d{4}-\d{2}-\d{2}$/.test(s||'')}
+function validISO(s){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s||''))return false;
+  var date=new Date(s+'T00:00:00Z');
+  return Number.isFinite(date.getTime())&&date.toISOString().slice(0,10)===s;
+}
 function fmtDate(iso){
   if(!validISO(iso))return '';
   var p=iso.split('-').map(Number);
@@ -248,9 +266,18 @@ var state=blank(),tab='works',storageOk=true,pending=null,toastT=null,selWork=''
 function guessLang(){var l=(navigator.language||'en').toLowerCase();return l.indexOf('es')===0?'es':l.indexOf('pt')===0?'pt':'en'}
 function guessCurrency(){var m=/-([A-Za-z]{2})$/.exec(navigator.language||'');var r=m?m[1].toUpperCase():'';var map={US:'USD',GB:'GBP',CA:'CAD',AU:'AUD',BR:'BRL',MX:'MXN',AR:'ARS',CO:'COP',CL:'CLP',CH:'CHF'};return map[r]||'EUR'}
 function blank(){return{app:'aek-exhibition-kit',v:1,lang:guessLang(),currency:guessCurrency(),artist:'',contact:'',exhibition:'',venue:'',place:'',issueDate:'',works:[]}}
-function newWork(){return{id:uid(),title:'',year:'',medium:'',dims:'',edSize:0,apCount:0,price:null,notes:'',copies:[],cond:{date:'',by:'',overall:'good',loc:'',details:''},cons:{consignee:'',contact:'',start:'',end:'',comm:'',ins:'gallery',notes:''}}}
+function newWork(){return{id:uid(),title:'',year:'',medium:'',dims:'',edSize:0,apCount:0,open:false,price:null,notes:'',copies:[],cond:{date:'',by:'',overall:'good',loc:'',details:''},cons:{consignee:'',contact:'',start:'',end:'',comm:'',ins:'gallery',notes:''}}}
+function hasCopyRecord(c){return c.status!=='available'||c.buyer!==''||c.date!==''||c.sale!==null}
+function addOpenCopy(w){
+  var n=w.copies.reduce(function(last,c){return c.kind==='open'?Math.max(last,c.n):last},0)+1;
+  w.copies.push({id:uid(),kind:'open',n:n,of:1,status:'available',buyer:'',date:'',sale:null});
+}
 function buildCopies(w){
   var want=[];
+  if(w.open){
+    w.copies=w.copies.filter(function(c){return c.kind==='open'||hasCopyRecord(c)});
+    return 0;
+  }
   if(w.edSize<=0)want.push({kind:'unique',n:1,of:1});
   else{for(var i=1;i<=w.edSize;i++)want.push({kind:'ed',n:i,of:w.edSize});for(var j=1;j<=w.apCount;j++)want.push({kind:'ap',n:j,of:w.apCount})}
   var old={};w.copies.forEach(function(c){old[c.kind+':'+c.n]=c});
@@ -258,23 +285,24 @@ function buildCopies(w){
   want.forEach(function(x){var k=x.kind+':'+x.n,c=old[k];used[k]=1;
     if(c){c.of=x.of;out.push(c)}else out.push({id:uid(),kind:x.kind,n:x.n,of:x.of,status:'available',buyer:'',date:'',sale:null})});
   var extra=0;
-  w.copies.forEach(function(c){if(!used[c.kind+':'+c.n]&&c.status!=='available'){out.push(c);extra++}});
-  var ord={ed:0,ap:1,unique:2};
+  w.copies.forEach(function(c){if(!used[c.kind+':'+c.n]&&(c.kind==='open'||hasCopyRecord(c))){out.push(c);extra++}});
+  var ord={ed:0,ap:1,unique:2,open:3};
   out.sort(function(a,b){return ord[a.kind]-ord[b.kind]||a.n-b.n});
   w.copies=out;return extra;
 }
 function cleanWork(x){
   x=x||{};var w=newWork();
   w.id=clip(x.id,40)||w.id;w.title=clip(x.title,200);w.year=clip(x.year,20);w.medium=clip(x.medium,200);w.dims=clip(x.dims,120);
+  w.open=x.open===true;
   w.edSize=intIn(x.edSize,0,999);w.apCount=w.edSize>0?intIn(x.apCount,0,99):0;
   var p=x.price===null||x.price===''||x.price===undefined?null:num(x.price,0,1e9);w.price=p;w.notes=clip(x.notes,1000);
   var c=x.cond||{};w.cond={date:validISO(c.date)?c.date:'',by:clip(c.by,120),overall:CONDS.indexOf(c.overall)>=0?c.overall:'good',loc:clip(c.loc,160),details:clip(c.details,2000)};
   var k=x.cons||{};w.cons={consignee:clip(k.consignee,160),contact:clip(k.contact,200),start:validISO(k.start)?k.start:'',end:validISO(k.end)?k.end:'',comm:k.comm===''||k.comm===null||k.comm===undefined?'':String(num(k.comm,0,100)===null?'':num(k.comm,0,100)),ins:INS.indexOf(k.ins)>=0?k.ins:'gallery',notes:clip(k.notes,2000)};
   var seen={};
-  (Array.isArray(x.copies)?x.copies:[]).slice(0,1200).forEach(function(r){
-    if(!r||['ed','ap','unique'].indexOf(r.kind)<0)return;
-    var n=intIn(r.n,1,999),key=r.kind+':'+n;if(seen[key])return;seen[key]=1;
-    w.copies.push({id:clip(r.id,40)||uid(),kind:r.kind,n:n,of:1,status:STATUSES.indexOf(r.status)>=0?r.status:'available',buyer:clip(r.buyer,160),date:validISO(r.date)?r.date:'',sale:r.sale===null||r.sale===''||r.sale===undefined?null:num(r.sale,0,1e9)});
+  (Array.isArray(x.copies)?x.copies:[]).forEach(function(r){
+    if(!r||['ed','ap','unique','open'].indexOf(r.kind)<0)return;
+    var n=intIn(r.n,1,r.kind==='open'?Number.MAX_SAFE_INTEGER:999),key=r.kind+':'+n;if(seen[key])return;seen[key]=1;
+    w.copies.push({id:clip(r.id,40)||uid(),kind:r.kind,n:n,of:intIn(r.of,1,999),status:STATUSES.indexOf(r.status)>=0?r.status:'available',buyer:clip(r.buyer,160),date:validISO(r.date)?r.date:'',sale:r.sale===null||r.sale===''||r.sale===undefined?null:num(r.sale,0,1e9)});
   });
   buildCopies(w);return w;
 }
@@ -304,12 +332,14 @@ function armed(btn,labelKey,sureKey,fn){
   });
 }
 function copyLabel(c){
+  if(c.kind==='open')return t('openCopy',{n:c.n});
   if(c.kind==='unique')return t('unique');
   if(c.kind==='ap')return t('apLabel')+' '+c.n+'/'+c.of;
   return c.n+'/'+c.of;
 }
 function workTitle(w){return w.title||t('untitled')}
 function edText(w){
+  if(w.open)return t('openEdition');
   if(w.edSize<=0)return t('unique');
   var s=t('edOf',{n:w.edSize});if(w.apCount>0)s+=' + '+w.apCount+' '+t('apLabel');return s;
 }
@@ -375,7 +405,9 @@ function sheetHead(title,sub){
 }
 
 function extraCount(w){
+  if(w.open)return 0;
   return w.copies.filter(function(c){
+    if(c.kind==='open')return true;
     if(c.kind==='unique')return w.edSize>0;
     if(c.kind==='ed')return c.n>w.edSize;
     return c.n>w.apCount;
@@ -386,7 +418,7 @@ function sampleRow(){
   var go=function(){state=sample();save();render()};
   if(state.works.length)armed(smp,'sample','sampleSure',go);else smp.addEventListener('click',go);
   return h('div',{class:'row gap'},
-    h('button',{type:'button',class:'primary',text:t('addWork'),onclick:function(){var w=newWork();buildCopies(w);state.works.push(w);selWork=w.id;save();render()}}),
+    h('button',{type:'button',class:'primary',text:t('addWork'),onclick:function(){var w=newWork();buildCopies(w);state.works.unshift(w);selWork=w.id;save();render();var title=document.getElementById('title-'+w.id);if(title)title.focus()}}),
     smp);
 }
 function vWorks(){
@@ -413,12 +445,13 @@ function vWorks(){
     box.appendChild(h('section',{class:'work'},
       h('h3',{text:t('workN',{n:i+1})}),
       h('div',{class:'grid'},
-        field(t('wTitle'),h('input',{type:'text',maxlength:200,value:w.title,oninput:function(e){w.title=clip(e.target.value,200);save()}})),
+        field(t('wTitle'),h('input',{type:'text',id:'title-'+w.id,maxlength:200,value:w.title,oninput:function(e){w.title=clip(e.target.value,200);save()}})),
         field(t('wYear'),h('input',{type:'text',maxlength:20,value:w.year,oninput:function(e){w.year=clip(e.target.value,20);save()}})),
         field(t('wMedium'),h('input',{type:'text',maxlength:200,value:w.medium,oninput:function(e){w.medium=clip(e.target.value,200);save()}})),
         field(t('wDims'),h('input',{type:'text',maxlength:120,value:w.dims,oninput:function(e){w.dims=clip(e.target.value,120);save()}})),
-        field(t('wEd'),h('input',{type:'number',min:0,max:999,step:1,value:String(w.edSize),onchange:function(e){w.edSize=intIn(e.target.value,0,999);if(w.edSize<=0)w.apCount=0;e.target.value=String(w.edSize);rebuild();render()}})),
-        field(t('wAp'),h('input',{type:'number',min:0,max:99,step:1,value:String(w.apCount),disabled:w.edSize<=0,onchange:function(e){w.apCount=intIn(e.target.value,0,99);e.target.value=String(w.apCount);rebuild();render()}})),
+        chk(t('openEdition'),w.open,function(value){w.open=value;rebuild();render()}),
+        field(t('wEd'),h('input',{type:'number',min:0,max:999,step:1,disabled:w.open,value:String(w.edSize),onchange:function(e){w.edSize=intIn(e.target.value,0,999);if(w.edSize<=0)w.apCount=0;e.target.value=String(w.edSize);rebuild();render()}})),
+        field(t('wAp'),h('input',{type:'number',min:0,max:99,step:1,value:String(w.apCount),disabled:w.open||w.edSize<=0,onchange:function(e){w.apCount=intIn(e.target.value,0,99);e.target.value=String(w.apCount);rebuild();render()}})),
         field(t('wPrice')+' ('+state.currency+')',h('input',{type:'number',min:0,step:'any',value:w.price===null?'':String(w.price),onchange:function(e){w.price=e.target.value===''?null:num(e.target.value,0,1e9);save()}})),
         field(t('wNotes'),h('input',{type:'text',maxlength:1000,value:w.notes,oninput:function(e){w.notes=clip(e.target.value,1000);save()}}))
       ),
@@ -441,7 +474,7 @@ function vLabels(){
   if(!state.works.length){box.appendChild(emptyMsg());return box}
   var g=h('div',{class:'labels c'+lab.cols});
   state.works.forEach(function(w){
-    var soldAll=w.copies.length>0&&w.copies.every(function(c){return c.status==='sold'});
+    var soldAll=!w.open&&w.copies.length>0&&w.copies.every(function(c){return c.status==='sold'});
     g.appendChild(h('div',{class:'label'},
       h('div',{class:'a',text:artistLine()}),
       h('div',{class:'t',text:workTitle(w)+(w.year?', '+w.year:'')}),
@@ -460,12 +493,12 @@ function vPrices(){
     chk(t('showAvail'),plist.avail,function(v){plist.avail=v;render()}),
     h('span',{style:'flex:1'}),printBtn())));
   if(!state.works.length){box.appendChild(emptyMsg());return box}
-  var rows=state.works.filter(function(w){return !plist.only||countAvail(w)>0});
+  var rows=state.works.filter(function(w){return !plist.only||w.open||countAvail(w)>0});
   var tb=h('tbody');
   rows.forEach(function(w){
     var n=w.copies.filter(function(c){return c.status!=='notforsale'}).length||w.copies.length;
     var av=countAvail(w);
-    var availTxt=w.edSize<=0?(w.copies[0]?statusName(w.copies[0].status):''):t('availOf',{a:av,n:n});
+    var availTxt=w.open?t('openEdition'):w.edSize<=0?(w.copies[0]?statusName(w.copies[0].status):''):t('availOf',{a:av,n:n});
     tb.appendChild(h('tr',null,
       h('td',null,h('strong',{text:workTitle(w)+(w.year?', '+w.year:'')})),
       h('td',{text:[w.medium,w.dims].filter(Boolean).join(' · ')}),
@@ -519,25 +552,100 @@ function vCerts(){
   box.appendChild(wrap);return box;
 }
 
-function vReg(){
-  var box=h('div');
-  if(!state.works.length){box.appendChild(emptyMsg());return box}
-  var pills=h('div',{class:'pills'});
-  function setPills(){pills.textContent='';var s=0,a=0,v=0;state.works.forEach(function(w){w.copies.forEach(function(c){if(c.status==='sold'){s++;v+=(c.sale!==null?c.sale:(w.price||0))}if(c.status==='available')a++})});
-    pills.appendChild(h('span',{class:'pill',text:t('sumSold',{n:s})}));pills.appendChild(h('span',{class:'pill',text:t('sumAvail',{n:a})}));pills.appendChild(h('span',{class:'pill',text:t('sumValue',{v:fmtMoney(v)})}))}
-  setPills();
-  var tb=h('tbody');
-  state.works.forEach(function(w){w.copies.forEach(function(c){
-    tb.appendChild(h('tr',null,
-      h('td',null,h('strong',{text:workTitle(w)}),h('div',{class:'note',text:copyLabel(c)})),
-      h('td',null,selectOf(STATUSES.map(function(s){return[s,statusName(s)]}),c.status,function(v){
-        c.status=v;if(v==='sold'&&!c.date)c.date=todayISO();save();setPills()})),
-      h('td',null,h('input',{type:'text',maxlength:160,value:c.buyer,'aria-label':t('regBuyer'),oninput:function(e){c.buyer=clip(e.target.value,160);save()}})),
-      h('td',null,h('input',{type:'date',value:c.date,'aria-label':t('regDate'),onchange:function(e){c.date=validISO(e.target.value)?e.target.value:'';save()}})),
-      h('td',null,h('input',{type:'number',min:0,step:'any',value:c.sale===null?'':String(c.sale),placeholder:w.price===null?'':String(w.price),'aria-label':t('regPrice'),onchange:function(e){c.sale=e.target.value===''?null:num(e.target.value,0,1e9);save();setPills()}}))));
+var expandedWorks=new Set();
+function markCopyStatus(w,c,status){
+  if(status==='sold'&&c.status!=='sold'){
+    if(!c.date)c.date=todayISO();
+    if(c.sale===null)c.sale=w.price;
+  }
+  c.status=status;
+}
+function registerTotals(works){
+  var totals={sold:0,available:0,value:0,unpriced:0};
+  works.forEach(function(w){w.copies.forEach(function(c){
+    if(c.status==='available')totals.available++;
+    if(c.status==='sold'){
+      totals.sold++;
+      if(c.sale===null)totals.unpriced++;
+      else totals.value+=c.sale;
+    }
   })});
-  box.appendChild(h('section',{class:'panel'},h('h2',{text:t('regH')}),pills,
-    h('div',{class:'tw'},h('table',null,h('thead',null,h('tr',null,h('th',{text:t('regCopy')}),h('th',{text:t('regStatus')}),h('th',{text:t('regBuyer')}),h('th',{text:t('regDate')}),h('th',{text:t('regPrice')}))),tb))));
+  return totals;
+}
+function vReg(){
+  var box=h('section',{class:'panel'},h('h2',{text:t('regH')}));
+  if(!state.works.length){box.appendChild(emptyMsg());return box}
+  var pills=h('div',{class:'pills','aria-live':'polite'});
+  function setPills(){
+    pills.textContent='';
+    var totals=registerTotals(state.works);
+    add(pills,[
+      h('span',{class:'pill',text:t('sumSold',{n:totals.sold})}),
+      h('span',{class:'pill',text:t('sumAvail',{n:totals.available})}),
+      h('span',{class:'pill',text:t('sumValue',{v:fmtMoney(totals.value)})}),
+      totals.unpriced?h('span',{class:'pill',text:t('unpriced',{n:totals.unpriced})}):null
+    ]);
+  }
+  var selected=new Map();
+  var batchDate=h('input',{type:'text',placeholder:'YYYY-MM-DD',maxlength:10});
+  var apply=h('button',{type:'button',onclick:function(){
+    var value=batchDate.value.trim();
+    if(!validISO(value)){toast(t('regBadDate'),true);batchDate.focus();return}
+    selected.forEach(function(row){row.copy.date=value;row.date.value=value;row.check.checked=false});
+    selected.clear();save();updateBatch();
+  }});
+  function updateBatch(){apply.textContent=t('regBatch',{n:selected.size});apply.disabled=selected.size===0}
+  updateBatch();setPills();
+  add(box,[pills,h('div',{class:'row gap register-batch'},field(t('regDateFormat'),batchDate),apply)]);
+  state.works.slice().sort(function(a,b){
+    return workTitle(a).localeCompare(workTitle(b),LOCALE[state.lang],{sensitivity:'base',numeric:true});
+  }).forEach(function(w){
+    var summary=h('summary',{text:workTitle(w)+' · '+w.copies.length});
+    var group=h('details',{class:'register-group',open:expandedWorks.has(w.id)},summary);
+    var body=h('div');
+    function drawRows(){
+      body.textContent='';
+      if(w.open)body.appendChild(h('button',{type:'button',text:t('addOpenCopy'),onclick:function(){
+        addOpenCopy(w);save();summary.textContent=workTitle(w)+' · '+w.copies.length;
+        appendRow(w.copies[w.copies.length-1]);setPills();
+      }}));
+      var rows=h('tbody');
+      function appendRow(c){
+        var date=h('input',{type:'text',maxlength:10,placeholder:'YYYY-MM-DD',value:c.date,'aria-label':t('regDateFormat'),onchange:function(){
+          var value=date.value.trim();
+          if(value&&!validISO(value)){toast(t('regBadDate'),true);date.value=c.date;return}
+          c.date=value;date.value=value;save();
+        }});
+        var sale=h('input',{type:'number',min:0,step:'any',value:c.sale===null?'':String(c.sale),'aria-label':t('regPrice'),onchange:function(e){
+          c.sale=e.target.value===''?null:num(e.target.value,0,1e9);save();setPills();
+        }});
+        var check=h('input',{type:'checkbox','aria-label':t('regSelect')+' '+workTitle(w)+' '+copyLabel(c),onchange:function(){
+          if(check.checked)selected.set(c,{copy:c,date:date,check:check});
+          else selected.delete(c);
+          updateBatch();
+        }});
+        rows.appendChild(h('tr',null,
+          h('td',null,check,copyLabel(c)),
+          h('td',null,selectOf(STATUSES.map(function(status){return[status,statusName(status)]}),c.status,function(value){
+            markCopyStatus(w,c,value);
+            date.value=c.date;sale.value=c.sale===null?'':String(c.sale);save();setPills();
+          })),
+          h('td',null,h('input',{type:'text',maxlength:160,value:c.buyer,'aria-label':t('regBuyer'),oninput:function(e){c.buyer=clip(e.target.value,160);save()}})),
+          h('td',null,date),h('td',null,sale)));
+      }
+      w.copies.forEach(appendRow);
+      body.appendChild(h('div',{class:'tw'},h('table',null,h('thead',null,h('tr',null,
+        ['regCopy','regStatus','regBuyer','regDate','regPrice'].map(function(key){return h('th',{text:t(key)})}))),rows)));
+    }
+    group.addEventListener('toggle',function(){
+      if(group.open){
+        expandedWorks.add(w.id);
+        if(!body.childNodes.length)drawRows();
+      }else expandedWorks.delete(w.id);
+    });
+    if(group.open)drawRows();
+    group.appendChild(body);box.appendChild(group);
+  });
   return box;
 }
 
@@ -657,17 +765,31 @@ function csvWorks(text){
   function col(names){for(var i=0;i<names.length;i++){var k=hd.indexOf(names[i]);if(k>=0)return k}return -1}
   var C={title:col(['title','name','work','artwork','artwork title','product title']),year:col(['year','date','year made']),medium:col(['medium','technique','materials','material','type','product type']),dims:col(['dimensions','dims','size','sizes','image size','paper size']),ed:col(['edition','edition size','editions','ed','run']),ap:col(['proofs','ap','aps','artist proofs','artists proofs','artist s proofs']),price:col(['price','list price','retail price','variant price','amount'])};
   if(C.title<0)return [];
-  var out=[],seen={};
+  var out=[],seen=new Set();
   rows.slice(1).forEach(function(r){
     var g=function(k){return C[k]>=0?String(r[C[k]]||'').trim():''};
-    var title=g('title');if(!title||seen[title.toLowerCase()])return;seen[title.toLowerCase()]=1;
+    var title=g('title');if(!title)return;
     var w=newWork();w.title=clip(title,200);w.year=clip(g('year'),20);w.medium=clip(g('medium'),200);w.dims=clip(g('dims'),120);
+    w.open=/^(open|open edition)$/i.test(g('ed'));
     var ed=g('ed').match(/(\d+)\s*$/);w.edSize=ed?intIn(ed[1],0,999):0;
     var ap=g('ap').match(/\d+/);w.apCount=w.edSize>0&&ap?intIn(ap[0],0,99):0;
     var p=g('price').replace(/[^0-9.,]/g,'');if(/,\d{2}$/.test(p)&&p.indexOf('.')<0)p=p.replace(',','.');p=p.replace(/,/g,'');
-    w.price=p===''?null:num(p,0,1e9);buildCopies(w);out.push(w);
+    w.price=p===''?null:num(p,0,1e9);
+    var key=catalogueKey(w);
+    if(seen.has(key))return;
+    seen.add(key);out.push(w);
   });
-  return out.slice(0,500-state.works.length);
+  return out;
+}
+function catalogueKey(w){
+  return JSON.stringify([
+    w.title.trim().toLowerCase(),w.year.trim(),w.medium.trim().toLowerCase(),w.dims.trim().toLowerCase(),
+    w.open,w.open?0:w.edSize,w.open?0:w.apCount
+  ]);
+}
+function newCatalogueWorks(works,existing){
+  var keys=new Set(existing.map(catalogueKey));
+  return works.filter(function(w){return !keys.has(catalogueKey(w))});
 }
 function importBox(){
   var pend=h('div',{class:'row gap'});
@@ -675,9 +797,15 @@ function importBox(){
     var f=e.target.files&&e.target.files[0];pend.textContent='';if(!f)return;
     if(f.size>5*1024*1024){toast(t('bkBig'),true);return}
     var r=new FileReader();
-    r.onload=function(){var ws=csvWorks(r.result);
-      if(!ws.length){toast(t('imNone'),true);return}
-      pend.appendChild(h('button',{type:'button',class:'primary',text:t('imConfirm',{n:ws.length}),onclick:function(){state.works=state.works.concat(ws);save();tab='works';render();toast(t('imDone',{n:ws.length}))}}));
+    r.onload=function(){
+      var parsed=csvWorks(r.result);
+      if(!parsed.length){toast(t('imNone'),true);return}
+      var ws=newCatalogueWorks(parsed,state.works);
+      var skipped=parsed.length-ws.length;
+      if(skipped)pend.appendChild(h('p',{class:'note',text:t('imExisting',{n:skipped})}));
+      ws=ws.slice(0,Math.max(0,500-state.works.length));
+      if(!ws.length)return;
+      pend.appendChild(h('button',{type:'button',class:'primary',text:t('imConfirm',{n:ws.length}),onclick:function(){var added=newCatalogueWorks(ws,state.works).slice(0,Math.max(0,500-state.works.length));added.forEach(buildCopies);state.works=state.works.concat(added);save();tab='works';render();toast(t('imDone',{n:added.length}))}}));
       pend.appendChild(h('span',{class:'note',text:ws.slice(0,3).map(function(w){return w.title}).join(', ')+(ws.length>3?'…':'')}));
     };
     r.onerror=function(){toast(t('bkBad'),true)};r.readAsText(f);
